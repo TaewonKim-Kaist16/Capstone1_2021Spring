@@ -14,7 +14,7 @@ Mat buffer;
 ros::Publisher pub;
 ros::Publisher pub_markers;
 
-void ball_detect(){
+/*void ball_detect(){
      Mat gray;  //assign a memory to save the edge images
      Mat frame;  //assign a memory to save the images
      Mat mask,mask1, mask2;
@@ -90,11 +90,24 @@ void ball_detect(){
      pub.publish(msg);  //publish a message
      pub_markers.publish(ball_list);  //publish a marker message
 
+}*/
+
+void line_trace(){
+    Mat gray;  //assign a memory to convert into grayscale images
+    Mat blur_img; // assign a memory for gaussian blur (preprocessing)
+    double thresh;
+    cvtColor(buffer, gray, CV_RGB2GRAY);
+    flip(gray, gray, 1);
+    GaussianBlur(gray, blur_img, Size(5, 5), 0);
+    thresh = threshold(blur_img, buffer,0, 255, THRESH_OTSU|THRESH_BINARY);
+
+    cv::imshow("view", buffer);  //show the image with a window
+    cv::waitKey(1);
+
 }
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)
 {
-
 
    try
    {
@@ -104,19 +117,19 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
    {
      ROS_ERROR("Could not convert from '%s' to 'bgr8'.", msg->encoding.c_str());
    }
-   ball_detect(); //proceed ball detection
+   line_trace(); //proceed line_tracing
 }
 
 
 int main(int argc, char **argv)
 {
-   ros::init(argc, argv, "ball_detect_node"); //init ros nodd
+   ros::init(argc, argv, "line_tracing_node"); //init ros nodd
    ros::NodeHandle nh; //create node handler
    image_transport::ImageTransport it(nh); //create image transport and connect it to node hnalder
    image_transport::Subscriber sub = it.subscribe("/kinect_rgb", 1, imageCallback); //create subscriber
 
-   pub = nh.advertise<core_msgs::ball_position>("/position", 100); //setting publisher
-   pub_markers = nh.advertise<visualization_msgs::Marker>("/balls",1);
+   //pub = nh.advertise<core_msgs::ball_position>("/position", 100); //setting publisher
+   //pub_markers = nh.advertise<visualization_msgs::Marker>("/balls",1);
 
    ros::spin(); //spin.
    return 0;
