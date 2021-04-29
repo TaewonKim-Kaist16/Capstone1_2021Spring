@@ -22,7 +22,14 @@ It publishes the information of ball position and color by calculating geometry 
 rosrun ball_detection ball_detection_node
 ```
 
+## line_tracing
+Node for line tracing.
 
+#### Usage
+
+```console
+rosrun line_tracing line_tracing_node
+```
 
 ## coppeliasim_models
 
