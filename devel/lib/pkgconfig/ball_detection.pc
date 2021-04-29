@@ -1,0 +1,8 @@
+prefix=/home/taewon/Capstone1_2021Spring/devel
+
+Name: ball_detection
+Description: Description of ball_detection
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

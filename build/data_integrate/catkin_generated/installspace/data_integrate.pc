@@ -1,0 +1,8 @@
+prefix=/home/taewon/Capstone1_2021Spring/install
+
+Name: data_integrate
+Description: Description of data_integrate
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
