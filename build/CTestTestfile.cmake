@@ -6,6 +6,8 @@
 # testing this directory and lists subdirectories to be tested as well.
 subdirs("gtest")
 subdirs("robot_teleop")
+subdirs("map_server")
 subdirs("core_msgs")
 subdirs("ball_detection")
 subdirs("data_integrate")
+subdirs("amcl")

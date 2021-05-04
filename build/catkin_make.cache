@@ -1,2 +1,2 @@
-ball_detection:core_msgs:data_integrate:robot_teleop
+amcl:ball_detection:core_msgs:data_integrate:map_server:robot_teleop
 -DCATKIN_DEVEL_PREFIX=/home/taewon/Capstone1_2021Spring/devel -DCMAKE_INSTALL_PREFIX=/home/taewon/Capstone1_2021Spring/install -G Unix Makefiles
