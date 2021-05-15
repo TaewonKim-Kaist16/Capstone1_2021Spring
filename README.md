@@ -21,6 +21,13 @@ Node for detecting red and green balls.
 It publishes relative red ball positions as a “/red_position” topic and relative green ball position as a “/green_position” topic.
 The topic type is core_msgs::ball_position.
 
+In the core_msgs::ball_position, the direction of img_x and img_y is shown below. You can just say img_x as right direction and img_y as front direction.
+
+vision sensor view direction: ^
+img_x direction: >
+img_y direction: ^
+
+
 ### Usage
 
 ```console
