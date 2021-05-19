@@ -4,7 +4,7 @@ KAIST 2021 Spring Capstone Design 1
 
 This is a repository for capstone design 1 codes. All the codes are just for your reference, so change the code as necessary (e.g. topic name, ball size and color).
 
-To download the package, write the command below in ~/(catkin work space name)/src terminal.
+To download the package, write the command below in ~/catkin_ws/src terminal.
 ```console
 git clone https://github.com/kaistcapstone/Capstone1_2021Spring.git
 ```
@@ -12,35 +12,28 @@ git clone https://github.com/kaistcapstone/Capstone1_2021Spring.git
 
 ## ball_detection
 
-This node needs opencv if you have not installed opencv follow below link.
+Node for detecting red balls.
 
-https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html
+It publishes the information of ball position and color by calculating geometry between the robot and balls.
 
-Node for detecting red and green balls.
-
-It publishes relative red ball positions as a “/red_position” topic and relative green ball position as a “/green_position” topic.
-The topic type is core_msgs::ball_position.
-
-In the core_msgs::ball_position, the direction of img_x and img_y is shown below. You can just say img_x as right direction and img_y as front direction.
-
-vision sensor view direction: ^  
-img_x direction: >  
-img_y direction: ^  
-
-
-### Usage
+#### Usage
 
 ```console
 rosrun ball_detection ball_detection_node
 ```
 
-### Error
-If large error in relative position or any bug occurs, record the image topic from CoppeliaSim using 'rosbag' command.
+## line_tracing
+Node for line tracing.
 
-The last test was done with modell F_5_6_4_kinect.ttm.
-This model's camera view changes little bit for a long time.
-Also, you can check map_ver3_with_model_F.ttt scene file.
+This node processes the line_tracing algorithm and publish the vector(1X16 array) data of
 
+distances of 16 center points from the center datum line. The data is send to core_msgs/msg/dist_center.msg.
+
+#### Usage
+
+```console
+rosrun line_tracing line_tracing_node
+```
 
 
 ## coppeliasim_models
@@ -84,15 +77,21 @@ rosrun data_integrate data_show_node
 
 ## robot_teleop
 
-Nodes for manually manipulating the gripper and robot wheels.
+Nodes for manipulating the gripper and robot wheels.
+
+Wheel by cam option subscribes the core_msg node to get vector data from core_msgs/msg/dist_center.
+
+Then determines the wheel speed using the obtained vector data.
 
 #### Usage
 
 ```console
-# gripper
+# gripper by key
 rosrun robot_teleop prismatic_teleop_key
-# wheel
+# wheel by key
 rosrun robot_teleop wheel_teleop_key
+# wheel by cam
+rosrun robot_teleop wheel_teleop_cam
 ```
 
 
@@ -109,7 +108,7 @@ rosrun robot_teleop wheel_teleop_key
 
 - TBA
 
-  
+
 
 ## Contact
 
