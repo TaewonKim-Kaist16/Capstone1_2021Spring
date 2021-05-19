@@ -1,0 +1,8 @@
+prefix=/home/jhkim/catkin_ws/Capstone1_2021Spring/devel
+
+Name: data_integrate
+Description: Description of data_integrate
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
