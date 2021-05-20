@@ -1,3 +1,3 @@
 Header header
 int32 num
-float32[] data
+geometry_msgs/Point[] data

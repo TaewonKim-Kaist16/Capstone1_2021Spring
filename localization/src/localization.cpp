@@ -9,8 +9,6 @@
 #include <algorithm>
 #include "localization/robot_position.h"
 #include "localization/obstacle.h"
-// #include <nav_msgs/Odometry.h>
-// #include "tf/transform_datatypes.h"
 
 #include <iostream>
 #include <pcl/io/pcd_io.h>
@@ -148,7 +146,7 @@ void transform_rel2abs(int idx1, int idx2, geometry_msgs::Point ref_point1, geom
             << "angle : " << robot_geometry.angle << endl << endl;
 
         obstacle_data.num = 0;
-        // obstacle_data.data.clear();
+        obstacle_data.data.clear();
         cout << "obstacle ----------------" << endl;
         for (int j=0;j<4;j++) {
             if (relative_position.obstacles[j].x == 0 || relative_position.obstacles[j].y == 0) { continue; }
@@ -162,12 +160,16 @@ void transform_rel2abs(int idx1, int idx2, geometry_msgs::Point ref_point1, geom
             else if ( (obs_abs_x > 1.4 || obs_abs_x < 1.4) && (obs_abs_y > 4.6) ) { continue; }
 
             cout << j << " th : " << obs_abs_x << " " << obs_abs_y << endl;
+     
+            geometry_msgs::Point obs_p;
+            obs_p.x = obs_abs_x;
+            obs_p.y = obs_abs_y;            
 
+            obstacle_data.data.push_back(obs_p);
             obstacle_data.num ++;
-
         }
         cout << endl;
-            
+
     }
 }
 

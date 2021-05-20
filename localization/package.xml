@@ -13,9 +13,9 @@
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>libpcl-all-dev</depend>
+  <depend>geometry_msgs</depend>
   <build_depend>message_generation</build_depend>
   <exec_depend>message_runtime</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
 
   <export>
 
