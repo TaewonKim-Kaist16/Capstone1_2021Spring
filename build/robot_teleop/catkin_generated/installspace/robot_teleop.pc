@@ -1,8 +1,0 @@
-prefix=/home/taewon/Capstone1_2021Spring/install
-
-Name: robot_teleop
-Description: Description of robot_teleop
-Version: 1.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: rospy geometry_msgs
