@@ -41,6 +41,34 @@ The last test was done with modell F_5_6_4_kinect.ttm.
 This model's camera view changes little bit for a long time.
 Also, you can check map_ver3_with_model_F.ttt scene file.
 
+## line_distance
+
+This node needs opencv if you have not installed opencv follow below link.
+
+https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html
+
+Node for detecting planes with line and calculating relative distance and slope angle for them.
+
+It publishes relative distances and slope angle of the planes as '/plane_info' topic.
+
+Unit of slope is degree, and unit of distance is meter.
+
+Slope and distance informations are sorted from nearest line to farthest line.
+
+### plane_info.msg
+This message has 
+Header header 
+int32 size 
+float32[] slope 
+float32[] distance 
+size is size for slope and distance vectors.
+slope and distance are relative to the depth camera.
+
+### Usage
+
+```console
+rosrun line_distance line_distance_node
+```
 
 
 ## coppeliasim_models
