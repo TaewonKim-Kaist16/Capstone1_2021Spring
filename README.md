@@ -56,11 +56,11 @@ Unit of slope is degree, and unit of distance is meter.
 Slope and distance informations are sorted from nearest line to farthest line.
 
 ### plane_info.msg
-This message has 
-Header header 
-int32 size 
-float32[] slope 
-float32[] distance 
+This message has  
+Header header  
+int32 size  
+float32[] slope  
+float32[] distance  
 size is size for slope and distance vectors.
 slope and distance are relative to the depth camera.
 
