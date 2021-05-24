@@ -55,6 +55,8 @@ Unit of slope is degree, and unit of distance is meter.
 
 Slope and distance informations are sorted from nearest line to farthest line.
 
+I tested it with line_detection camera(below view).
+
 ### plane_info.msg
 This message has  
 Header header  

@@ -83,7 +83,7 @@ void line_distance()
     double sinvalue, dx, dy, dz, slope;
     Mat image_line = image_brg.clone();
     std::vector<float> prev_point, curr_point;
-    bool flag = 0;
+    int flag = 2;
     int sign;
     double mean_slope_x, mean_slope_y, mean_slope_z;
     double mean_slope = 180;
@@ -163,7 +163,10 @@ void line_distance()
         {
             break;
         }
-        flag = 0;
+        if (flag != 2)
+        {
+            flag = 0;
+        }
     }
     if (mean_slope != 180)
     {
@@ -176,7 +179,7 @@ void line_distance()
         left_slopes.push_back(slopes);
     }
     prev_point.clear();
-    flag = 0;
+    flag = 2;
     mean_slope = 180;
     for (i = rows - 1; i >= 0; i = i - 15)
     {
@@ -249,7 +252,10 @@ void line_distance()
         {
             break;
         }
-        flag = 0;
+        if (flag != 2)
+        {
+            flag = 0;
+        }
     }
     if (mean_slope != 180)
     {
@@ -286,7 +292,7 @@ void line_distance()
         for (; j < right_slopes.size(); ++j)
         {
             right_slope = slopes2angle(right_slopes[j]);
-            if (left_slope + 5 > right_slope && left_slope - 5 < right_slope)
+            if (left_slope + 7 > right_slope && left_slope - 7 < right_slope)
             {
                 vectora.clear();
                 vectorb.clear();
@@ -326,7 +332,7 @@ void line_distance()
     pub.publish(msg);
     //cv::imshow("Depth", image);
     //cv::imshow("HaHaHa", image_brg);
-    //cv::imshow("HeHeHe", image_line);
+    cv::imshow("HeHeHe", image_line);
     cv::waitKey(1);
 }
 
