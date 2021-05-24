@@ -8,7 +8,8 @@
 #include <vector>
 #include <algorithm>
 #include "localization/robot_position.h"
-#include "localization/obstacle.h"
+#include "localization/multi_position.h"
+#include "core_msgs/ball_position.h"
 
 #include <iostream>
 #include <pcl/io/pcd_io.h>
@@ -28,7 +29,9 @@ using namespace std;
 sensor_msgs::PointCloud2 msg_cloud;
 sensor_msgs::PointCloud2 msg_obstacle;
 geometry_msgs::Twist vel_msg;
-localization::obstacle obstacle_data;
+localization::multi_position obstacle_data;
+localization::multi_position red_balls_data;
+localization::multi_position green_ball_data;
 
 ros::Time timeStamp;
 
@@ -42,6 +45,8 @@ struct WALL {
 struct RELATIVE_POSITION {
     WALL walls[4];
     geometry_msgs::Point obstacles[4]; // Sometimes the goal post is detected
+    geometry_msgs::Point red_balls[6];
+    geometry_msgs::Point green_ball;
     geometry_msgs::Point reference;
     geometry_msgs::Point crossing_points[4];
 };
@@ -149,7 +154,7 @@ void transform_rel2abs(int idx1, int idx2, geometry_msgs::Point ref_point1, geom
         obstacle_data.data.clear();
         cout << "obstacle ----------------" << endl;
         for (int j=0;j<4;j++) {
-            if (relative_position.obstacles[j].x == 0 || relative_position.obstacles[j].y == 0) { continue; }
+            if (relative_position.obstacles[j].x == 0 && relative_position.obstacles[j].y == 0) { continue; }
 
             // cout << j << " th : " << relative_position.obstacles[j].x << " " << relative_position.obstacles[j].y << endl;
             float obs_abs_x = r1*relative_position.obstacles[j].x - r2*relative_position.obstacles[j].y +p1;
@@ -169,7 +174,58 @@ void transform_rel2abs(int idx1, int idx2, geometry_msgs::Point ref_point1, geom
             obstacle_data.num ++;
         }
         cout << endl;
+        
+        red_balls_data.num = 0;
+        red_balls_data.data.clear();
+        cout << "red balls ---------------" << endl;
+        for (int k=0;k<6;k++) {
+            if (relative_position.red_balls[k].x < -10 || relative_position.red_balls[k].y < -10) { continue; }
+            if (relative_position.red_balls[k].x == 0 && relative_position.red_balls[k].y == 0) { continue; }
 
+            // TODO : Compare with real position
+            // cout << k << " th : " << relative_position.red_balls[k].x << " " << relative_position.red_balls[k].y << endl;
+            float rb_abs_x = r1*relative_position.red_balls[k].x - r2*relative_position.red_balls[k].y +p1;
+            float rb_abs_y = r2*relative_position.red_balls[k].x + r1*relative_position.red_balls[k].y +p2;
+
+            if (rb_abs_x < 0 || rb_abs_x > 3) { continue; }
+            else if (rb_abs_y < 0 || rb_abs_y > 5) { continue; }
+
+            cout << k << " th : " << rb_abs_x << " " << rb_abs_y << endl;
+
+            geometry_msgs::Point rb_p;
+            rb_p.x = rb_abs_x;
+            rb_p.y = rb_abs_y;            
+
+            red_balls_data.data.push_back(rb_p);
+            red_balls_data.num ++;
+        }
+        cout << endl;
+
+        green_ball_data.num = 0;
+        green_ball_data.data.clear();
+        cout << "green balls -------------" << endl;
+        if (relative_position.green_ball.x < -10 || relative_position.green_ball.y < -10) { }
+        else if (relative_position.green_ball.x == 0 && relative_position.green_ball.y == 0) { }
+        else {
+            // TODO : Compare with real position
+            // cout << relative_position.green_ball.x << " " << relative_position.green_ball.y << endl;
+            float gb_abs_x = r1*relative_position.green_ball.x - r2*relative_position.green_ball.y +p1;
+            float gb_abs_y = r2*relative_position.green_ball.x + r1*relative_position.green_ball.y +p2;
+
+            if (gb_abs_x < 0 || gb_abs_x > 3) {}
+            else if (gb_abs_y < 0 || gb_abs_y > 5) {}
+            else {
+                cout << gb_abs_x << " " << gb_abs_y << endl;
+
+                geometry_msgs::Point gb_p;
+                gb_p.x = gb_abs_x;
+                gb_p.y = gb_abs_y;            
+
+                green_ball_data.data.push_back(gb_p);
+                green_ball_data.num ++;
+            }
+        }
+        cout << endl;
     }
 }
 
@@ -177,7 +233,7 @@ void mode_1_rearrage(double th) {
 
     cout << "mode1 rearranging..." << endl;
 
-    if (abs(th-90) > 3) {
+    if (abs(th-90) > 5) {
         wait_count = 0;
         if (th > 90) {
             vel_msg.angular.z = max(abs(th-90)*0.01,0.15);
@@ -531,18 +587,45 @@ void lidar_cb(sensor_msgs::LaserScan msg){
 
 }
 
+
+void red_ball_cb(core_msgs::ball_position ball_pose) {
+    for (int i=0; i<6; i++) {
+        if (i < ball_pose.size) {
+            relative_position.red_balls[i].x = ball_pose.img_x[i];
+            relative_position.red_balls[i].y = ball_pose.img_y[i];
+        }
+        else {
+            relative_position.red_balls[i].x = -100; // Set nonsence value to distinguish later
+            relative_position.red_balls[i].y = -100; // Set nonsence value to distinguish later
+        }
+    }
+}
+
+void green_ball_cb(core_msgs::ball_position ball_pose) {
+    if (ball_pose.size != 0) {
+        relative_position.green_ball.x = ball_pose.img_x[0];
+        relative_position.green_ball.y = ball_pose.img_y[0];
+    }
+}
+
+
 int main(int argc, char **argv){
 
     ros::init(argc, argv, "localization");
     ros::NodeHandle nh;
 
     ros::Subscriber sub_lidar = nh.subscribe("/scan", 1, lidar_cb);
-    ros::Publisher pub_cloud = nh.advertise<sensor_msgs::PointCloud2>("/filtered_cloud", 1);
-    ros::Publisher pub_obstacle_pcl = nh.advertise<sensor_msgs::PointCloud2>("/obstacle/point_cloud", 1);
+    ros::Subscriber sub_red_ball = nh.subscribe("/red_position",1,red_ball_cb);
+    ros::Subscriber sub_green_ball = nh.subscribe("/green_position",1,green_ball_cb);
+
+    ros::Publisher pub_cloud = nh.advertise<sensor_msgs::PointCloud2>("map/point_cloud/wall", 1);
+    ros::Publisher pub_obstacle_pcl = nh.advertise<sensor_msgs::PointCloud2>("map/point_cloud/obstacle", 1);
 
     ros::Publisher pub_vel = nh.advertise<geometry_msgs::Twist>("/cmd_vel",1);
-    ros::Publisher pub_robot_geometry = nh.advertise<localization::robot_position>("/robot_pose",1);
-    ros::Publisher pub_obstacle_data = nh.advertise<localization::obstacle>("/obstacle/data",1);
+    ros::Publisher pub_robot_geometry = nh.advertise<localization::robot_position>("map/data/robot",1);
+    ros::Publisher pub_obstacle_data = nh.advertise<localization::multi_position>("map/data/obstacle",1);
+    ros::Publisher pub_rb_data = nh.advertise<localization::multi_position>("map/data/red_ball",1);
+    ros::Publisher pub_gb_data = nh.advertise<localization::multi_position>("map/data/green_ball",1);
 
     localization::robot_position msg_robot;
     
@@ -553,22 +636,30 @@ int main(int argc, char **argv){
     while(ros::ok()){
         ros::spinOnce();
 
+        ros::Time current_time = ros::Time::now();
+
         msg_cloud.header.frame_id = "base_scan"; 
-        msg_cloud.header.stamp = ros::Time::now();
+        msg_cloud.header.stamp = current_time;
         pub_cloud.publish(msg_cloud);
 
         msg_obstacle.header.frame_id = "base_scan"; 
-        msg_obstacle.header.stamp = ros::Time::now();        
+        msg_obstacle.header.stamp = current_time;  
         pub_obstacle_pcl.publish(msg_obstacle);
 
-        msg_robot.header.stamp = ros::Time::now();
+        msg_robot.header.stamp = current_time;
         msg_robot.x = robot_geometry.pose.x;
         msg_robot.y = robot_geometry.pose.y;
         msg_robot.angle = robot_geometry.angle;
         pub_robot_geometry.publish(msg_robot);
 
-        obstacle_data.header.stamp = ros::Time::now();
+        obstacle_data.header.stamp = current_time;
         pub_obstacle_data.publish(obstacle_data);
+
+        red_balls_data.header.stamp = current_time;
+        pub_rb_data.publish(red_balls_data);
+
+        green_ball_data.header.stamp = current_time;
+        pub_gb_data.publish(green_ball_data);
 
 
         if (mode != 4) {

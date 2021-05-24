@@ -18,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  obstacle.msg
+  multi_position.msg
   robot_position.msg
 )
 
