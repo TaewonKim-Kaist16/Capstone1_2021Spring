@@ -1,0 +1,174 @@
+#!/usr/bin/env python
+
+# Copyright (c) 2011, Willow Garage, Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#    * Redistributions of source code must retain the above copyright
+#      notice, this list of conditions and the following disclaimer.
+#    * Redistributions in binary form must reproduce the above copyright
+#      notice, this list of conditions and the following disclaimer in the
+#      documentation and/or other materials provided with the distribution.
+#    * Neither the name of the Willow Garage, Inc. nor the names of its
+#      contributors may be used to endorse or promote products derived from
+#       this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+import rospy
+import numpy
+
+from geometry_msgs.msg import Twist
+from std_msgs.msg import Float64 as joint_command
+from core_msgs.msg import dist_center
+import sys, select, os
+if os.name == 'nt':
+  import msvcrt
+else:
+  import tty, termios
+
+BURGER_MAX_LIN_VEL = 1.00
+BURGER_MAX_ANG_VEL = 2.84
+
+WAFFLE_MAX_LIN_VEL = 0.26
+WAFFLE_MAX_ANG_VEL = 1.82
+
+LIN_VEL_STEP_SIZE = 0.01
+ANG_VEL_STEP_SIZE = 0.02
+
+
+cnt = 0
+
+target_linear_vel   = 0.0
+target_angular_vel  = 0.0
+control_linear_vel  = 0.0
+control_angular_vel = 0.0
+
+last_linear_vel = 0.0
+last_angular_vel = 0.0
+
+e = """
+Communications Failed
+"""
+
+
+if __name__=="__main__":
+    if os.name != 'nt':
+        settings = termios.tcgetattr(sys.stdin)
+
+    rospy.init_node('obstacle_climb')
+    rate = rospy.Rate(5)
+
+
+    pub_left_wheel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    pub_right_wheel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    pub_rear_actuator = rospy.Publisher('/RearActuators/cmd_vel', Twist, queue_size=10)
+    pub_gripper_main = rospy.Publisher('GripperMain/cmd_vel', Twist, queue_size=10)
+
+    while not rospy.is_shutdown():
+        #sub = rospy.Subscriber("/distance", dist_center, callback)
+        #print(vels(target_linear_vel, target_angular_vel))
+
+        command_left_wheel = Twist()
+        command_right_wheel = Twist()
+        command_rear_actuator = Twist()
+        command_gripper = Twist()
+
+        if cnt < 15:                                      # 3sec for step 1, 0~3
+            command_gripper.linear.z = 0.03
+            pub_gripper_main.publish(command_gripper)
+
+            cnt = cnt + 1
+        elif cnt >= 15 and cnt < 30:                      # 3sec for step 2, 3~6
+            command_left_wheel.linear.x = 7.0
+            command_right_wheel.linear.x = 7.0
+            pub_left_wheel.publish(command_left_wheel)
+            pub_right_wheel.publish(command_right_wheel)
+            cnt = cnt + 1
+        elif cnt >= 30  and cnt < 70:                     # 8sec for step 3-1, 6~14
+            command_gripper.linear.z = -0.04
+            pub_gripper_main.publish(command_gripper)
+            command_left_wheel.linear.x = 16
+            command_right_wheel.linear.x = 16
+            command_rear_actuator.angular.y = 0.6
+            pub_left_wheel.publish(command_left_wheel)
+            pub_right_wheel.publish(command_right_wheel)
+            pub_rear_actuator.publish(command_rear_actuator)
+            cnt = cnt + 1
+
+        elif cnt >= 70  and cnt < 90:                     # 4sec for step 3-2, 14~18
+            command_gripper.linear.z = 0
+            pub_gripper_main.publish(command_gripper)
+            command_left_wheel.linear.x = 5.0
+            command_right_wheel.linear.x = 5.0
+            command_rear_actuator.angular.y = -1.57
+            pub_left_wheel.publish(command_left_wheel)
+            pub_right_wheel.publish(command_right_wheel)
+            pub_rear_actuator.publish(command_rear_actuator)
+            cnt = cnt + 1
+        elif cnt >= 90  and cnt < 120:                     # 6sec for step 3-3, 18~24
+            command_left_wheel.linear.x = 5.8
+            command_right_wheel.linear.x = 5.8
+            command_rear_actuator.angular.y = -3.14
+            pub_left_wheel.publish(command_left_wheel)
+            pub_right_wheel.publish(command_right_wheel)
+            pub_rear_actuator.publish(command_rear_actuator)
+            cnt = cnt + 1
+
+        elif cnt >= 120  and cnt < 140:                     # 4sec for step 4, 24~28
+            command_left_wheel.linear.x = 3.0
+            command_right_wheel.linear.x = 3.0
+            command_gripper.linear.z = -0.04
+            pub_gripper_main.publish(command_gripper)
+            command_rear_actuator.angular.y = -3.14
+            pub_left_wheel.publish(command_left_wheel)
+            pub_right_wheel.publish(command_right_wheel)
+            pub_rear_actuator.publish(command_rear_actuator)
+            cnt = cnt + 1
+
+        elif cnt >= 140  and cnt < 155:                     # 3sec for step 5, 28~31
+            command_left_wheel.linear.x = 5.0
+            command_right_wheel.linear.x = 5.0
+            command_gripper.linear.z = 0.02
+            pub_gripper_main.publish(command_gripper)
+            command_rear_actuator.angular.y = 0
+            pub_left_wheel.publish(command_left_wheel)
+            pub_right_wheel.publish(command_right_wheel)
+            pub_rear_actuator.publish(command_rear_actuator)
+            cnt = cnt + 1
+        elif cnt >= 155  and cnt < 185:                     # 6sec for step 5, 31~37
+            command_left_wheel.linear.x = 5.0
+            command_right_wheel.linear.x = 5.0
+            command_left_wheel.angular.z = 3.0
+            command_right_wheel.angular.z = 3.0
+
+            command_gripper.linear.z = 0.0
+            pub_gripper_main.publish(command_gripper)
+            command_rear_actuator.angular.y = 0
+            pub_left_wheel.publish(command_left_wheel)
+            pub_right_wheel.publish(command_right_wheel)
+            pub_rear_actuator.publish(command_rear_actuator)
+            cnt = cnt + 1
+        else:
+            command_gripper.linear.z = 0.0
+            pub_gripper_main.publish(command_gripper)
+            command_left_wheel.linear.x = 0.0
+            command_right_wheel.linear.x = 0.0
+            command_rear_actuator.angular.y = 0
+            pub_left_wheel.publish(command_left_wheel)
+            pub_right_wheel.publish(command_right_wheel)
+            pub_rear_actuator.publish(command_rear_actuator)
+        rate.sleep()
+
