@@ -81,6 +81,8 @@ Nodes for manipulating the gripper and robot wheels.
 
 Wheel by cam option subscribes the core_msg node to get vector data from core_msgs/msg/dist_center.
 
+Obstacle climb option processes the climbing step by step.
+
 Then determines the wheel speed using the obtained vector data.
 
 #### Usage
@@ -89,9 +91,11 @@ Then determines the wheel speed using the obtained vector data.
 # gripper by key
 rosrun robot_teleop prismatic_teleop_key
 # wheel by key
-rosrun robot_teleop wheel_teleop_key
+rosrun robot_teleop wheel_teleop_key / (key2: for 5.17~new model)
 # wheel by cam
-rosrun robot_teleop wheel_teleop_cam
+rosrun robot_teleop wheel_teleop_cam / (cam2: for 5.17~new model)
+# obstacle climbing
+rosrun robot_teleop obstacle_climb / (also for 5.17~new model)
 ```
 
 

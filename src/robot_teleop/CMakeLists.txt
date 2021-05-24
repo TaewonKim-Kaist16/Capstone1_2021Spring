@@ -46,12 +46,27 @@ catkin_install_python(PROGRAMS
 )
 
 catkin_install_python(PROGRAMS
+  scripts/obstacle_climb
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+catkin_install_python(PROGRAMS
   scripts/wheel_teleop_key
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 catkin_install_python(PROGRAMS
+  scripts/wheel_teleop_key2
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+catkin_install_python(PROGRAMS
   scripts/wheel_teleop_cam
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+catkin_install_python(PROGRAMS
+  scripts/wheel_teleop_cam2
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

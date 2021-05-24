@@ -61,11 +61,23 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/robot_teleop" TYPE PROGRAM FILES "/home/jhkim/catkin_ws/Capstone1_2021Spring/build/robot_teleop/catkin_generated/installspace/obstacle_climb")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/robot_teleop" TYPE PROGRAM FILES "/home/jhkim/catkin_ws/Capstone1_2021Spring/build/robot_teleop/catkin_generated/installspace/wheel_teleop_key")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/robot_teleop" TYPE PROGRAM FILES "/home/jhkim/catkin_ws/Capstone1_2021Spring/build/robot_teleop/catkin_generated/installspace/wheel_teleop_key2")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/robot_teleop" TYPE PROGRAM FILES "/home/jhkim/catkin_ws/Capstone1_2021Spring/build/robot_teleop/catkin_generated/installspace/wheel_teleop_cam")
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/robot_teleop" TYPE PROGRAM FILES "/home/jhkim/catkin_ws/Capstone1_2021Spring/build/robot_teleop/catkin_generated/installspace/wheel_teleop_cam2")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)

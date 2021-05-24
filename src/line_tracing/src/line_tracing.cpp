@@ -127,10 +127,10 @@ void line_trace(){
     cols = buffer.cols;
 
     cvtColor(buffer, buffer, CV_GRAY2BGR);
-    for (int i =0; i <rows; i++){
+    /*for (int i =0; i <rows; i++){
         buffer.at<Vec3b>(i, cols/2) = Vec3b(0,0,255);
         buffer.at<Vec3b>(i, cols/2+1) = Vec3b(0,0,255);
-    }
+    }*/ //center_datum: red line
 
     for (int i =0; i <rows; i=i+rows/16){
         int leftend = 0;

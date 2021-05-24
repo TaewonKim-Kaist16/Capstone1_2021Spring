@@ -55,7 +55,6 @@ CMAKE_BINARY_DIR = /home/jhkim/catkin_ws/Capstone1_2021Spring/build
 # The main recursive "all" target.
 all: gtest/all
 all: core_msgs/all
-all: ball_detection/all
 all: data_integrate/all
 all: line_tracing/all
 all: robot_teleop/all
@@ -65,7 +64,6 @@ all: robot_teleop/all
 # The main recursive "preinstall" target.
 preinstall: gtest/preinstall
 preinstall: core_msgs/preinstall
-preinstall: ball_detection/preinstall
 preinstall: data_integrate/preinstall
 preinstall: line_tracing/preinstall
 preinstall: robot_teleop/preinstall
@@ -80,45 +78,11 @@ clean: CMakeFiles/tests.dir/clean
 clean: CMakeFiles/download_extra_data.dir/clean
 clean: gtest/clean
 clean: core_msgs/clean
-clean: ball_detection/clean
 clean: data_integrate/clean
 clean: line_tracing/clean
 clean: robot_teleop/clean
 
 .PHONY : clean
-
-#=============================================================================
-# Directory level rules for directory ball_detection
-
-# Recursive "all" directory target.
-ball_detection/all: ball_detection/CMakeFiles/ball_detect_node.dir/all
-
-.PHONY : ball_detection/all
-
-# Recursive "preinstall" directory target.
-ball_detection/preinstall:
-
-.PHONY : ball_detection/preinstall
-
-# Recursive "clean" directory target.
-ball_detection/clean: ball_detection/CMakeFiles/ball_detect_node.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/clean
-ball_detection/clean: ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/clean
-
-.PHONY : ball_detection/clean
 
 #=============================================================================
 # Directory level rules for directory core_msgs
@@ -171,8 +135,8 @@ core_msgs/clean: core_msgs/CMakeFiles/core_msgs_gennodejs.dir/clean
 # Directory level rules for directory data_integrate
 
 # Recursive "all" directory target.
-data_integrate/all: data_integrate/CMakeFiles/data_integation_node.dir/all
 data_integrate/all: data_integrate/CMakeFiles/data_show_node.dir/all
+data_integrate/all: data_integrate/CMakeFiles/data_integation_node.dir/all
 
 .PHONY : data_integrate/all
 
@@ -182,8 +146,18 @@ data_integrate/preinstall:
 .PHONY : data_integrate/preinstall
 
 # Recursive "clean" directory target.
-data_integrate/clean: data_integrate/CMakeFiles/data_integation_node.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean
 data_integrate/clean: data_integrate/CMakeFiles/data_show_node.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean
+data_integrate/clean: data_integrate/CMakeFiles/data_integation_node.dir/clean
 
 .PHONY : data_integrate/clean
 
@@ -259,6 +233,11 @@ line_tracing/preinstall:
 
 # Recursive "clean" directory target.
 line_tracing/clean: line_tracing/CMakeFiles/line_tracing_node.dir/clean
+line_tracing/clean: line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/clean
+line_tracing/clean: line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/clean
+line_tracing/clean: line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/clean
+line_tracing/clean: line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/clean
+line_tracing/clean: line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/clean
 
 .PHONY : line_tracing/clean
 
@@ -423,7 +402,7 @@ gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googlemock/CMakeFiles/gmoc
 gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=26,27 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=24,25 "Built target gmock_main"
 .PHONY : gtest/googlemock/CMakeFiles/gmock_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -450,7 +429,7 @@ gtest/googlemock/CMakeFiles/gmock_main.dir/clean:
 gtest/googlemock/CMakeFiles/gmock.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/depend
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=24,25 "Built target gmock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=22,23 "Built target gmock"
 .PHONY : gtest/googlemock/CMakeFiles/gmock.dir/all
 
 # Build rule for subdir invocation for target.
@@ -477,7 +456,7 @@ gtest/googlemock/CMakeFiles/gmock.dir/clean:
 gtest/googletest/CMakeFiles/gtest_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=30,31 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=28,29 "Built target gtest_main"
 .PHONY : gtest/googletest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -504,7 +483,7 @@ gtest/googletest/CMakeFiles/gtest_main.dir/clean:
 gtest/googletest/CMakeFiles/gtest.dir/all:
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/depend
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=28,29 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=26,27 "Built target gtest"
 .PHONY : gtest/googletest/CMakeFiles/gtest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -859,7 +838,7 @@ core_msgs/CMakeFiles/core_msgs_generate_messages_py.dir/all: core_msgs/CMakeFile
 core_msgs/CMakeFiles/core_msgs_generate_messages_py.dir/all: core_msgs/CMakeFiles/_core_msgs_generate_messages_check_deps_multiarray.dir/all
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_py.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_py.dir/depend
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_py.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=16,17,18,19 "Built target core_msgs_generate_messages_py"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=14,15,16,17 "Built target core_msgs_generate_messages_py"
 .PHONY : core_msgs/CMakeFiles/core_msgs_generate_messages_py.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1025,7 +1004,7 @@ core_msgs/CMakeFiles/core_msgs_generate_messages_eus.dir/all: core_msgs/CMakeFil
 core_msgs/CMakeFiles/core_msgs_generate_messages_eus.dir/all: core_msgs/CMakeFiles/_core_msgs_generate_messages_check_deps_multiarray.dir/all
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_eus.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_eus.dir/depend
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_eus.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_eus.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=6,7,8,9 "Built target core_msgs_generate_messages_eus"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=4,5,6,7 "Built target core_msgs_generate_messages_eus"
 .PHONY : core_msgs/CMakeFiles/core_msgs_generate_messages_eus.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1249,7 +1228,7 @@ core_msgs/CMakeFiles/core_msgs_generate_messages_nodejs.dir/all: core_msgs/CMake
 core_msgs/CMakeFiles/core_msgs_generate_messages_nodejs.dir/all: core_msgs/CMakeFiles/_core_msgs_generate_messages_check_deps_multiarray.dir/all
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_nodejs.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_nodejs.dir/depend
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_nodejs.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_nodejs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=13,14,15 "Built target core_msgs_generate_messages_nodejs"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=11,12,13 "Built target core_msgs_generate_messages_nodejs"
 .PHONY : core_msgs/CMakeFiles/core_msgs_generate_messages_nodejs.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1280,7 +1259,7 @@ core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/all: core_msgs/CMakeFil
 core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/all: core_msgs/CMakeFiles/_core_msgs_generate_messages_check_deps_multiarray.dir/all
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/depend
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=3,4,5 "Built target core_msgs_generate_messages_cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=1,2,3 "Built target core_msgs_generate_messages_cpp"
 .PHONY : core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1311,7 +1290,7 @@ core_msgs/CMakeFiles/core_msgs_generate_messages_lisp.dir/all: core_msgs/CMakeFi
 core_msgs/CMakeFiles/core_msgs_generate_messages_lisp.dir/all: core_msgs/CMakeFiles/_core_msgs_generate_messages_check_deps_multiarray.dir/all
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_lisp.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_lisp.dir/depend
 	$(MAKE) -f core_msgs/CMakeFiles/core_msgs_generate_messages_lisp.dir/build.make core_msgs/CMakeFiles/core_msgs_generate_messages_lisp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=10,11,12 "Built target core_msgs_generate_messages_lisp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=8,9,10 "Built target core_msgs_generate_messages_lisp"
 .PHONY : core_msgs/CMakeFiles/core_msgs_generate_messages_lisp.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1359,463 +1338,85 @@ core_msgs/CMakeFiles/core_msgs_gennodejs.dir/clean:
 .PHONY : core_msgs/CMakeFiles/core_msgs_gennodejs.dir/clean
 
 #=============================================================================
-# Target rules for target ball_detection/CMakeFiles/ball_detect_node.dir
+# Target rules for target data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir
 
 # All Build rule for target.
-ball_detection/CMakeFiles/ball_detect_node.dir/all: core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/all
-	$(MAKE) -f ball_detection/CMakeFiles/ball_detect_node.dir/build.make ball_detection/CMakeFiles/ball_detect_node.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/ball_detect_node.dir/build.make ball_detection/CMakeFiles/ball_detect_node.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=1,2 "Built target ball_detect_node"
-.PHONY : ball_detection/CMakeFiles/ball_detect_node.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/ball_detect_node.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 5
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/ball_detect_node.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/ball_detect_node.dir/rule
-
-# Convenience name for target.
-ball_detect_node: ball_detection/CMakeFiles/ball_detect_node.dir/rule
-
-.PHONY : ball_detect_node
-
-# clean rule for target.
-ball_detection/CMakeFiles/ball_detect_node.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/ball_detect_node.dir/build.make ball_detection/CMakeFiles/ball_detect_node.dir/clean
-.PHONY : ball_detection/CMakeFiles/ball_detect_node.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_py"
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_py: ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_py
-
-# clean rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/clean
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_py.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_nodejs"
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_nodejs: ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_nodejs
-
-# clean rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/clean
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/build
+data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target roscpp_generate_messages_cpp"
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/all
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/all
 
 # Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/rule: cmake_check_build_system
+data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
 
 # Convenience name for target.
-roscpp_generate_messages_cpp: ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
+roscpp_generate_messages_cpp: data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/rule
 
 .PHONY : roscpp_generate_messages_cpp
 
 # clean rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/clean
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_cpp.dir/clean
+data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/clean
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_cpp.dir/clean
 
 #=============================================================================
-# Target rules for target ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir
+# Target rules for target data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir
 
 # All Build rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/build
+data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target roscpp_generate_messages_eus"
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/all
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/all
 
 # Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/rule: cmake_check_build_system
+data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/rule
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/rule
 
 # Convenience name for target.
-roscpp_generate_messages_eus: ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/rule
+roscpp_generate_messages_eus: data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/rule
 
 .PHONY : roscpp_generate_messages_eus
 
 # clean rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/clean
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_eus.dir/clean
+data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/clean
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_eus.dir/clean
 
 #=============================================================================
-# Target rules for target ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir
+# Target rules for target data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir
 
 # All Build rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_eus"
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_eus: ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_eus
-
-# clean rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/clean
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_eus.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/roscpp_generate_messages_py.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target roscpp_generate_messages_py"
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/rule
-
-# Convenience name for target.
-roscpp_generate_messages_py: ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/rule
-
-.PHONY : roscpp_generate_messages_py
-
-# clean rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/clean
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_py.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target roscpp_generate_messages_nodejs"
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
-
-# Convenience name for target.
-roscpp_generate_messages_nodejs: ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
-
-.PHONY : roscpp_generate_messages_nodejs
-
-# clean rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/clean
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_nodejs.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_cpp"
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_cpp: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
-
-.PHONY : rosgraph_msgs_generate_messages_cpp
-
-# clean rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/clean
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_eus"
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_eus: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
-
-.PHONY : rosgraph_msgs_generate_messages_eus
-
-# clean rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_lisp"
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_lisp: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
-
-.PHONY : rosgraph_msgs_generate_messages_lisp
-
-# clean rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target roscpp_generate_messages_lisp"
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-roscpp_generate_messages_lisp: ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/rule
-
-.PHONY : roscpp_generate_messages_lisp
-
-# clean rule for target.
-ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/build.make ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/clean
-.PHONY : ball_detection/CMakeFiles/roscpp_generate_messages_lisp.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_py"
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-rosgraph_msgs_generate_messages_py: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
-
-.PHONY : rosgraph_msgs_generate_messages_py
-
-# clean rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_nodejs"
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all
 
 # Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule: cmake_check_build_system
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
 
 # Convenience name for target.
-rosgraph_msgs_generate_messages_nodejs: ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
+rosgraph_msgs_generate_messages_nodejs: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/rule
 
 .PHONY : rosgraph_msgs_generate_messages_nodejs
 
 # clean rule for target.
-ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean
-.PHONY : ball_detection/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_cpp"
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_cpp: ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_cpp
-
-# clean rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/clean
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/clean
-
-#=============================================================================
-# Target rules for target ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir
-
-# All Build rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/all:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/depend
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_lisp"
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/all
-
-# Build rule for subdir invocation for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-	$(MAKE) -f CMakeFiles/Makefile2 ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_lisp: ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_lisp
-
-# clean rule for target.
-ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/clean:
-	$(MAKE) -f ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build.make ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/clean
-.PHONY : ball_detection/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/clean
-
-#=============================================================================
-# Target rules for target data_integrate/CMakeFiles/data_integation_node.dir
-
-# All Build rule for target.
-data_integrate/CMakeFiles/data_integation_node.dir/all: core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/all
-	$(MAKE) -f data_integrate/CMakeFiles/data_integation_node.dir/build.make data_integrate/CMakeFiles/data_integation_node.dir/depend
-	$(MAKE) -f data_integrate/CMakeFiles/data_integation_node.dir/build.make data_integrate/CMakeFiles/data_integation_node.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=20,21 "Built target data_integation_node"
-.PHONY : data_integrate/CMakeFiles/data_integation_node.dir/all
-
-# Build rule for subdir invocation for target.
-data_integrate/CMakeFiles/data_integation_node.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 5
-	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/data_integation_node.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
-.PHONY : data_integrate/CMakeFiles/data_integation_node.dir/rule
-
-# Convenience name for target.
-data_integation_node: data_integrate/CMakeFiles/data_integation_node.dir/rule
-
-.PHONY : data_integation_node
-
-# clean rule for target.
-data_integrate/CMakeFiles/data_integation_node.dir/clean:
-	$(MAKE) -f data_integrate/CMakeFiles/data_integation_node.dir/build.make data_integrate/CMakeFiles/data_integation_node.dir/clean
-.PHONY : data_integrate/CMakeFiles/data_integation_node.dir/clean
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_nodejs.dir/clean
 
 #=============================================================================
 # Target rules for target data_integrate/CMakeFiles/data_show_node.dir
@@ -1824,7 +1425,7 @@ data_integrate/CMakeFiles/data_integation_node.dir/clean:
 data_integrate/CMakeFiles/data_show_node.dir/all: core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/all
 	$(MAKE) -f data_integrate/CMakeFiles/data_show_node.dir/build.make data_integrate/CMakeFiles/data_show_node.dir/depend
 	$(MAKE) -f data_integrate/CMakeFiles/data_show_node.dir/build.make data_integrate/CMakeFiles/data_show_node.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=22,23 "Built target data_show_node"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=20,21 "Built target data_show_node"
 .PHONY : data_integrate/CMakeFiles/data_show_node.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1845,13 +1446,229 @@ data_integrate/CMakeFiles/data_show_node.dir/clean:
 .PHONY : data_integrate/CMakeFiles/data_show_node.dir/clean
 
 #=============================================================================
+# Target rules for target data_integrate/CMakeFiles/roscpp_generate_messages_py.dir
+
+# All Build rule for target.
+data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target roscpp_generate_messages_py"
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/all
+
+# Build rule for subdir invocation for target.
+data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/rule
+
+# Convenience name for target.
+roscpp_generate_messages_py: data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/rule
+
+.PHONY : roscpp_generate_messages_py
+
+# clean rule for target.
+data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/clean
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_py.dir/clean
+
+#=============================================================================
+# Target rules for target data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir
+
+# All Build rule for target.
+data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target roscpp_generate_messages_nodejs"
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/all
+
+# Build rule for subdir invocation for target.
+data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
+
+# Convenience name for target.
+roscpp_generate_messages_nodejs: data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/rule
+
+.PHONY : roscpp_generate_messages_nodejs
+
+# clean rule for target.
+data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/clean
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_nodejs.dir/clean
+
+#=============================================================================
+# Target rules for target data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir
+
+# All Build rule for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_cpp"
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all
+
+# Build rule for subdir invocation for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
+
+# Convenience name for target.
+rosgraph_msgs_generate_messages_cpp: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/rule
+
+.PHONY : rosgraph_msgs_generate_messages_cpp
+
+# clean rule for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/clean
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_cpp.dir/clean
+
+#=============================================================================
+# Target rules for target data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir
+
+# All Build rule for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_eus"
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all
+
+# Build rule for subdir invocation for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
+
+# Convenience name for target.
+rosgraph_msgs_generate_messages_eus: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/rule
+
+.PHONY : rosgraph_msgs_generate_messages_eus
+
+# clean rule for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_eus.dir/clean
+
+#=============================================================================
+# Target rules for target data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir
+
+# All Build rule for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_lisp"
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all
+
+# Build rule for subdir invocation for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
+
+# Convenience name for target.
+rosgraph_msgs_generate_messages_lisp: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/rule
+
+.PHONY : rosgraph_msgs_generate_messages_lisp
+
+# clean rule for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_lisp.dir/clean
+
+#=============================================================================
+# Target rules for target data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir
+
+# All Build rule for target.
+data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target roscpp_generate_messages_lisp"
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/all
+
+# Build rule for subdir invocation for target.
+data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/rule
+
+# Convenience name for target.
+roscpp_generate_messages_lisp: data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/rule
+
+.PHONY : roscpp_generate_messages_lisp
+
+# clean rule for target.
+data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/build.make data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/clean
+.PHONY : data_integrate/CMakeFiles/roscpp_generate_messages_lisp.dir/clean
+
+#=============================================================================
+# Target rules for target data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir
+
+# All Build rule for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target rosgraph_msgs_generate_messages_py"
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all
+
+# Build rule for subdir invocation for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
+
+# Convenience name for target.
+rosgraph_msgs_generate_messages_py: data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/rule
+
+.PHONY : rosgraph_msgs_generate_messages_py
+
+# clean rule for target.
+data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/build.make data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean
+.PHONY : data_integrate/CMakeFiles/rosgraph_msgs_generate_messages_py.dir/clean
+
+#=============================================================================
+# Target rules for target data_integrate/CMakeFiles/data_integation_node.dir
+
+# All Build rule for target.
+data_integrate/CMakeFiles/data_integation_node.dir/all: core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/all
+	$(MAKE) -f data_integrate/CMakeFiles/data_integation_node.dir/build.make data_integrate/CMakeFiles/data_integation_node.dir/depend
+	$(MAKE) -f data_integrate/CMakeFiles/data_integation_node.dir/build.make data_integrate/CMakeFiles/data_integation_node.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=18,19 "Built target data_integation_node"
+.PHONY : data_integrate/CMakeFiles/data_integation_node.dir/all
+
+# Build rule for subdir invocation for target.
+data_integrate/CMakeFiles/data_integation_node.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 5
+	$(MAKE) -f CMakeFiles/Makefile2 data_integrate/CMakeFiles/data_integation_node.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : data_integrate/CMakeFiles/data_integation_node.dir/rule
+
+# Convenience name for target.
+data_integation_node: data_integrate/CMakeFiles/data_integation_node.dir/rule
+
+.PHONY : data_integation_node
+
+# clean rule for target.
+data_integrate/CMakeFiles/data_integation_node.dir/clean:
+	$(MAKE) -f data_integrate/CMakeFiles/data_integation_node.dir/build.make data_integrate/CMakeFiles/data_integation_node.dir/clean
+.PHONY : data_integrate/CMakeFiles/data_integation_node.dir/clean
+
+#=============================================================================
 # Target rules for target line_tracing/CMakeFiles/line_tracing_node.dir
 
 # All Build rule for target.
 line_tracing/CMakeFiles/line_tracing_node.dir/all: core_msgs/CMakeFiles/core_msgs_generate_messages_cpp.dir/all
 	$(MAKE) -f line_tracing/CMakeFiles/line_tracing_node.dir/build.make line_tracing/CMakeFiles/line_tracing_node.dir/depend
 	$(MAKE) -f line_tracing/CMakeFiles/line_tracing_node.dir/build.make line_tracing/CMakeFiles/line_tracing_node.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=32,33 "Built target line_tracing_node"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num=30,31 "Built target line_tracing_node"
 .PHONY : line_tracing/CMakeFiles/line_tracing_node.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1870,6 +1687,141 @@ line_tracing_node: line_tracing/CMakeFiles/line_tracing_node.dir/rule
 line_tracing/CMakeFiles/line_tracing_node.dir/clean:
 	$(MAKE) -f line_tracing/CMakeFiles/line_tracing_node.dir/build.make line_tracing/CMakeFiles/line_tracing_node.dir/clean
 .PHONY : line_tracing/CMakeFiles/line_tracing_node.dir/clean
+
+#=============================================================================
+# Target rules for target line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir
+
+# All Build rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/all:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/depend
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_py"
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/all
+
+# Build rule for subdir invocation for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule
+
+# Convenience name for target.
+visualization_msgs_generate_messages_py: line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule
+
+.PHONY : visualization_msgs_generate_messages_py
+
+# clean rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/clean:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/clean
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/clean
+
+#=============================================================================
+# Target rules for target line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir
+
+# All Build rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/all:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/depend
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_nodejs"
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/all
+
+# Build rule for subdir invocation for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule
+
+# Convenience name for target.
+visualization_msgs_generate_messages_nodejs: line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule
+
+.PHONY : visualization_msgs_generate_messages_nodejs
+
+# clean rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/clean:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/clean
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/clean
+
+#=============================================================================
+# Target rules for target line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir
+
+# All Build rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/all:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/depend
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_eus"
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/all
+
+# Build rule for subdir invocation for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule
+
+# Convenience name for target.
+visualization_msgs_generate_messages_eus: line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule
+
+.PHONY : visualization_msgs_generate_messages_eus
+
+# clean rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/clean:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/clean
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/clean
+
+#=============================================================================
+# Target rules for target line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir
+
+# All Build rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/all:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/depend
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_lisp"
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/all
+
+# Build rule for subdir invocation for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule
+
+# Convenience name for target.
+visualization_msgs_generate_messages_lisp: line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule
+
+.PHONY : visualization_msgs_generate_messages_lisp
+
+# clean rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/clean:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/clean
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/clean
+
+#=============================================================================
+# Target rules for target line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir
+
+# All Build rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/all:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/depend
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles --progress-num= "Built target visualization_msgs_generate_messages_cpp"
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/all
+
+# Build rule for subdir invocation for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+	$(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles 0
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule
+
+# Convenience name for target.
+visualization_msgs_generate_messages_cpp: line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule
+
+.PHONY : visualization_msgs_generate_messages_cpp
+
+# clean rule for target.
+line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/clean:
+	$(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/clean
+.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

@@ -1,2 +1,2 @@
-ball_detection:core_msgs:data_integrate:line_tracing:robot_teleop
+core_msgs:data_integrate:line_tracing:robot_teleop
 -DCATKIN_DEVEL_PREFIX=/home/jhkim/catkin_ws/Capstone1_2021Spring/devel -DCMAKE_INSTALL_PREFIX=/home/jhkim/catkin_ws/Capstone1_2021Spring/install -G Unix Makefiles
