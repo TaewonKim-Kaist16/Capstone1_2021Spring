@@ -72,6 +72,11 @@ slope and distance are relative to the depth camera.
 rosrun line_distance line_distance_node
 ```
 
+### Error
+If some error occurs right before rosrun, check you made below line as a comment('--') in the lua script of kinect.
+depth_d['is_bigendian'] = 1  
+->  
+--depth_d['is_bigendian'] = 1  
 
 ## coppeliasim_models
 
