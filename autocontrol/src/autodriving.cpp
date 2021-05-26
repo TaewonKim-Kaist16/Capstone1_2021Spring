@@ -174,28 +174,6 @@ void move_single_point(){
             dist_error=0, dist_error_pre=0, dist_error_dot=0, dist_error_tot=0;
             ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
         }
-
-        // }
-        // else if (process_num == 1) {
-        //     vel_msg.linear.y = min(distance*(float)0.5,(float)0.1);
-
-        //     if (diff_angle > 0) { vel_msg.angular.z = min(abs(diff_angle),(float)0.1); }
-        //     else if (diff_angle < 0) { vel_msg.angular.z = -min(abs(diff_angle),(float)0.1); }
-        //     else { vel_msg.angular.z = 0; }
-
-        //     if (distance < 0.5) { process_num = 2; }
-        // }
-        // else if (process_num == 2) {
-        //     vel_msg.linear.y = distance*(float)0.2;
-
-        //     if (distance < 0.2) { process_num = 3; }
-        // }
-        // else {
-        //     vel_msg.linear.y = 0;
-        //     vel_msg.angular.z = 0;
-        //     flag_path_cb = false;
-        // }
-
     }
     else {
         vel_msg.linear.y = 0;
