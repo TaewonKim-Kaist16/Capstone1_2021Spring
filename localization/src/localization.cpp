@@ -136,7 +136,7 @@ void transform_rel2abs(int idx1, int idx2, geometry_msgs::Point ref_point1, geom
     float previous_y = robot_geometry.pose.y;
     float dist = sqrt(pow(p1-previous_x,2)+pow(p2-previous_y,2));
 
-    if (dist < 0.1) {
+    if (dist < 0.4) {
         robot_geometry.pose.x = p1;
         robot_geometry.pose.y = p2;
         robot_geometry.angle = atan2(r2,r1);
@@ -494,7 +494,7 @@ void lidar_cb(sensor_msgs::LaserScan msg){
     seg.setModelType (pcl::SACMODEL_LINE);
     seg.setMethodType (pcl::SAC_RANSAC);
     seg.setMaxIterations (100);
-    seg.setDistanceThreshold (0.02);
+    seg.setDistanceThreshold (0.03);
 
     for(int i = 0; i < 4; i++){
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_line (new pcl::PointCloud<pcl::PointXYZ> ());
