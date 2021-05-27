@@ -32,8 +32,7 @@ localization::multi_position green_ball_data;
 
 //to store pushing ball
 localization::multi_position red_div;
-red_div.num=0;
-red_div.data.clear();
+
 
 //pushing ball ball_number
 int pushed_ball=0;
@@ -42,15 +41,7 @@ int pushed_ball=0;
 localization::multi_position dummy,dummy1,dummy2;
 
 //to remember the previous detected position
-red_balls_data.data.resize(6);
-red_balls_data.num=5;
 
-obstacle_data.data.resize(4);
-obstacle_data.num=4;
-
-green_ball_data.num=1;
-green_ball_data.data.x = 0;
-green_ball_data.data.y = 0;
 
 //current detected object number
 int real_obstacle=0;
@@ -77,17 +68,20 @@ float rear_right;
 
 //------------------------------------------------------------
 //the other functions
-//rearrange the point by increasing order with euclidean norm
+float norms(geometry_msgs::Point*);
+//rearrange the point by increasing order with euclidean
+
 void rearrange(localization::multi_position *jungsnumber)
 {
   localization::multi_position hm=*jungsnumber;
   geometry_msgs::Point um;
   int a=hm.num;
+  float c,d;
   green_detect=0;
   //exception case : green ball detected as obstacle
   for (int i=0; i<a; i++)
   {
-    if (pow((hm.data[i].x-green_ball_data.data.x),2)+pow((hm.data[i].y-green_ball_data.data.y),2)<0.5)
+    if (pow((hm.data[i].x-green_ball_data.data[i].x),2)+pow((hm.data[i].y-green_ball_data.data[i].y),2)<0.5)
     {
       um = hm.data[i];
       hm.data[i]= hm.data[a-1];
@@ -100,7 +94,9 @@ void rearrange(localization::multi_position *jungsnumber)
   {
     for (int j=i+1; j<a-1; j++)
     {
-      if (norm(&hm.data[i])>norm(&hm.data[j]))
+      c=norms(&hm.data[i]);
+      d=norms(&hm.data[j]);
+      if (c>d)
       {
         um = hm.data[i];
         hm.data[i]=hm.data[j];
@@ -161,10 +157,11 @@ int updating(localization::multi_position *dum,localization::multi_position *nor
 //place green ball detection at last
 
 //Calculate norm
-float norm(geometry_msgs::Point *ha)
+float norms(geometry_msgs::Point *ha)
 {
-  float xm= ha.x;
-  float ym= ha.y;
+  geometry_msgs::Point z=*ha;
+  float xm= z.x;
+  float ym= z.y;
   xm=xm*xm+ym*ym;
   return xm;
 }
@@ -181,7 +178,7 @@ float inf_norm(geometry_msgs::Point *a, geometry_msgs::Point *b)
 float inf_norm_y(geometry_msgs::Point *a)
 {
   geometry_msgs::Point z = *a;
-  float dis= abs(z.y-localization::robot_position.y);
+  float dis= abs(z.y-robot_data.y);
   return dis;
 }
 //Calculate the norm with goal near walls
@@ -189,7 +186,7 @@ float bet_inf_norm(geometry_msgs::Point *a)
 {
   float b;
   geometry_msgs::Point ref = *a;
-  b=inf_norm(&ref, &green_ball_data.data);
+  b=inf_norm(&ref, &green_ball_data.data[0]);
   return b;
 }
 
@@ -241,7 +238,6 @@ void spin_rem(int i)
   {
     set_vel(1,-1,1,-1);
   }
-  else break;
 }
 //void change order of point
 void change_order(geometry_msgs::Point *a, geometry_msgs::Point *b)
@@ -268,24 +264,24 @@ void order_red()
   int p=real_red;
   for (int i=0; i<real_red; i++)
   {
-    store(i)=bet_inf_norm(&red_balls_data.data[i]);
+    store[i]=bet_inf_norm(&red_balls_data.data[i]);
   }
   for (int j=0; j<real_red; j++)
   {
-    if (store(j) <2.5)
+    if (store[j] <2.5)
     {
-      dums(k)=store(j);
-      store(j)=store(k);
-      store(j)=dums(k);
-      change_order(&red_position.data[j], &red_position.data[k]);
+      dums[k]=store[j];
+      store[j]=store[k];
+      store[k]=dums[k];
+      change_order(&red_balls_data.data[j], &red_balls_data.data[k]);
       k++;
     }
-    else if (store(j)>=2.5)
+    else if (store[j]>=2.5)
     {
-      dums(p-1)=store(j);
-      store(j)=store(p-1);
-      store(j)=dums(p-1);
-      change_order(&red_position.data[j], &red_position.data[p-1]);
+      dums[p-1]=store[j];
+      store[j]=store[p-1];
+      store[j]=dums[p-1];
+      change_order(&red_balls_data.data[j], &red_balls_data.data[p-1]);
       p--;
     }
     //k is the number of pushing balls
@@ -293,7 +289,7 @@ void order_red()
     red_div.data.resize(k);
     for(int i=0; i<k; i++)
     {
-      red_div.push_back(red_position.data[i]);
+      red_div.data.push_back(red_balls_data.data[i]);
     }
 
     //reorder of balls have to be pushed
@@ -366,13 +362,13 @@ void mode2_act()
 {
   if(getob==false)
   {
-    float x=real_obstacle.data[0].x;
+    float x=obstacle_data.data[0].x;
     //calculate norm_y of obstacles
-    for (int i=1; i<real_obstacle.num; i++)
+    for (int i=1; i<real_obstacle; i++)
       {
-        if (real_obstacle.data[i].x< x)
+        if (obstacle_data.data[i].x< x)
         {
-          x=real_obstacle.data[i].x;
+          x=obstacle_data.data[i].x;
         }
         getob=true;
       }
@@ -445,8 +441,8 @@ void path_plan()
 //callback function
 void obstacle_Callback(const localization::multi_position &obposition)
 {
-  dummy.data = obposition-> data;
-  dummy.num = obposition -> num;
+  dummy.data = obposition.data;
+  dummy.num = obposition.num;
   if (dummy.num != 4)
   {
     dummy.data.resize(4);
@@ -461,19 +457,22 @@ void obstacle_Callback(const localization::multi_position &obposition)
 
 void green_Callback(const localization::multi_position &gbposition)
 {
-  dummy1.data = gbposition-> data;
-  dummy1.num = gbposition -> num;
+  dummy1.data = gbposition.data;
+  dummy1.num = gbposition.num;
     if (dummy1.num !=0)
     {
-      green_ball_data.data.x = gbposition.data.x -> dummy1.data.x;
-      green_ball_data.data.y = gbposition.data.y -> dummy1.data.y;
+      for(int i=0; i<green_ball_data.num; i++)
+      {
+        green_ball_data.data[i].x = dummy1.data[i].x;
+        green_ball_data.data[i].y = dummy1.data[i].y;
+      }
     }
 }
 
 void red_Callback(const localization::multi_position &rbposition)
 {
-  dummy2.data = rbposition -> data;
-  dummy2.num = rbposition -> num;
+  dummy2.data = rbposition.data;
+  dummy2.num = rbposition.num;
   if (dummy2.num != 6)
   {
     dummy2.data.resize(6);
@@ -487,15 +486,16 @@ void red_Callback(const localization::multi_position &rbposition)
 
 void robot_Callback(const localization::robot_position &robotposition)
 {
-  robot_data.x = robotposition-> x;
-  robot_data.y = robotposition-> y;
-  robot_data.angle = robotposition-> angle;
+  robot_data.x = robotposition.x;
+  robot_data.y = robotposition.y;
+  robot_data.angle = robotposition.angle;
 }
 
 //main function
 
 int main(int argc, char **argv)
 {
+
     ros::init(argc, argv, "Path_plan_node");                                       //init ros nodd
     ros::NodeHandle nh;                                                              //create node handler
     ros::Subscriber sub_obstacle = nh.subscribe("map/data/obstacle", 1, obstacle_Callback); //create subscriber
@@ -507,6 +507,22 @@ int main(int argc, char **argv)
     ros::Publisher pub_front_right_wheel= nh.advertise<std_msgs::Float64>("front_right_wheel_velocity", 10);
     ros::Publisher pub_rear_left_wheel= nh.advertise<std_msgs::Float64>("rear_left_wheel_velocity", 10);
     ros::Publisher pub_rear_right_wheel= nh.advertise<std_msgs::Float64>("rear_right_wheel_velocity", 10);
+
+    red_div.num=0;
+    red_div.data.clear();
+
+    red_balls_data.data.resize(6);
+    red_balls_data.num=5;
+
+    obstacle_data.data.resize(4);
+    obstacle_data.num=4;
+
+    green_ball_data.num=1;
+    for(int i=0; i<green_ball_data.num; i++)
+    {
+      green_ball_data.data[i].x = 0;
+      green_ball_data.data[i].y = 0;
+    }
     //just example for topic of wheel message
     while(ros::ok)
     {
