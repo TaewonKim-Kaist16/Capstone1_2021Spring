@@ -16,6 +16,17 @@ find_package(catkin REQUIRED COMPONENTS
   localization
 )
 
+add_message_files(
+  FILES
+  motion.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  geometry_msgs
+  std_msgs
+)
+
 catkin_package(
 #  INCLUDE_DIRS include
   CATKIN_DEPENDS roscpp std_msgs geometry_msgs message_runtime

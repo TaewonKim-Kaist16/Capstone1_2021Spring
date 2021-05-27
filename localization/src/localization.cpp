@@ -36,9 +36,10 @@ localization::multi_position obstacle_data;
 localization::multi_position red_balls_data;
 localization::multi_position green_ball_data;
 std_msgs::Float32 timestamp_start, timestamp_current;
+float ang_error, ang_error_pre, ang_error_dot, ang_error_tot;
 
 int mode = 1;
-int wait_count = 0;
+// int wait_count = 0;
 
 struct WALL {
     float x,y,x_dir,y_dir;
@@ -235,22 +236,34 @@ void mode_1_rearrage(double th) {
 
     cout << "mode1 rearranging..." << endl;
 
-    if (abs(th-90) > 5) {
-        wait_count = 0;
-        if (th > 90) {
-            vel_msg.angular.z = max(abs(th-90)*0.01,0.15);
-            vel_msg.linear.y = 0.005;
-        }
-        else{
-            vel_msg.angular.z = -max(abs(th-90)*0.01,0.15);
-            vel_msg.linear.y = 0.005;
-        }
+    float kp=0.1,kd=0.0001,ki=0.01;
+
+    cout << "current time : " << timestamp_current.data << " start time : " << timestamp_start.data << endl;
+    float dt = max(timestamp_current.data - timestamp_start.data,(float)0.001);
+
+    ang_error = th - 90;
+    ang_error_dot = (ang_error - ang_error_pre) / dt;
+    ang_error_tot = ang_error * dt + ang_error_tot;
+
+    if (abs(th-90) > 3) {
+
+        float ang_vel = kp*ang_error+kd*ang_error_dot+ki*ang_error_tot;
+        if (ang_vel >= 0) { vel_msg.angular.z = min(ang_vel, (float)4); }
+        else { vel_msg.angular.z = max(ang_vel, (float)-1); }
+
+        timestamp_start = timestamp_current;
+    
+        cout << "dt : " << dt << endl;
+        cout << "error : " << ang_error << " | " << kp*ang_error << endl;
+        cout << "error dot : " << ang_error_dot << " | " << kd*ang_error_dot << endl;
+        cout << "error tot : " << ang_error_tot << " | " << ki*ang_error_tot << endl;
+        cout << "ang vel : " << vel_msg.angular.z << endl;
+
     }
+
     else {
-        wait_count ++;
-        if (wait_count > 10) {
+        if (timestamp_current.data - timestamp_start.data > 0.25) {
             mode = 2;
-            wait_count = 0;
             timestamp_start = timestamp_current;
         }
     }
@@ -259,13 +272,13 @@ void mode_1_rearrage(double th) {
 void mode_2_goforward(double th) {
     cout << "mode2 go forward..." << endl;
     
-    float dt = 2.5;
+    float dt = 4;
     if (timestamp_current.data - timestamp_start.data < dt) {
-        vel_msg.linear.y = 0.08;
-        vel_msg.angular.z = (th-90)*0.01;
+        vel_msg.linear.x = 4;
+        vel_msg.angular.z = (th-90)*0.5;
     }
     else {
-        vel_msg.linear.y = 0;
+        vel_msg.linear.x = 0;
         vel_msg.angular.z = 0;
         mode = 3;
     }
@@ -278,7 +291,7 @@ void mode_3_setRef() {
     WALL parallel_wall;
     WALL verticle_wall;
 
-    vel_msg.linear.y = 0;
+    vel_msg.linear.x = 0;
     vel_msg.angular.z = 0;
 
     int y_p = -100;
