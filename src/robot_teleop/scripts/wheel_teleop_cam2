@@ -68,7 +68,10 @@ def callback(msg):
     if len(centers) != 0:
         centers.clear()
     for i in range(16):
-        centers.append(msg.dist[i])
+        if len(msg.dist) == 0:
+            centers.append(0)
+        else:
+            centers.append(msg.dist[i])
     #print(centers)
 
 def control_vel(list):
@@ -89,16 +92,22 @@ def control_vel(list):
             if first_nonzero == 0:
                 first_nonzero = -1
                 nonzero_start = i
+                if nonzero_start >= 13:
+                    nozero_start == 13
         elif list[i] > 0:
             rightward+=1;
             if first_nonzero == 0:
                 first_nonzero = 1
                 nonzero_start = i
+                if nonzero_start >= 13:
+                    nozero_start == 13
         elif list[i] == 0:
             outline+=1
     for i in range(len(list), 0, -1):
         if list[i-1] != 0:
             nonzero_last = i-1
+            if nonzero_last <= 1:
+                nonzero_last == 1
             break
     if outline > 10:
         target_linear_vel = last_linear_vel
@@ -109,22 +118,22 @@ def control_vel(list):
     #if list[0] == 0 and list[1] == 0 and first_nonzero == -1:
 
     if abs(list[nonzero_start]) > 60 and abs(list[nonzero_start+1]) > 60 and first_nonzero == -1:
-        target_angular_vel = +0.15
-        target_linear_vel = 0.04
+        target_angular_vel = 2.7
+        target_linear_vel = 5
 
     #elif list[0] == 0 and list[1] == 0 and first_nonzero == 1:
         #if abs(list[nonzero_start]-list[nonzero_start+1]) > 40 and abs(list[nonzero_start+1]-list[nonzero_start+2]) > 40:
     elif ( ( abs(list[nonzero_start]) > 60 and abs(list[nonzero_start+1]+list[nonzero_start+2])/2 > 60 ) or ( abs(list[nonzero_last])>60 and abs(list[nonzero_last-1])>60 ) ) and first_nonzero == 1:
-            target_angular_vel = -0.15
-            target_linear_vel = 0.04
+            target_angular_vel = -2.7
+            target_linear_vel = 5
     else:
-        target_linear_vel = 0.09
+        target_linear_vel = 4.5
         #if list[0] < 0:
         if leftward > rightward:
-            target_angular_vel  = 0.08
+            target_angular_vel  = 0.8
         #elif list[0] > 0:
         elif leftward < rightward:
-            target_angular_vel  = -0.08
+            target_angular_vel  = -0.8
         else:
             target_angular_vel  = 0
 
@@ -193,24 +202,23 @@ if __name__=="__main__":
     while not rospy.is_shutdown():
         sub = rospy.Subscriber("/distance", dist_center, callback)
 
-        target_linear_vel = 0.09
+        target_linear_vel = 4.5
         if len(centers)>0:
             control_vel(centers)
         else:
             target_angular_vel = 0.0
         control_linear_vel  = 0.0
         control_angular_vel = 0.0
-        target_angle = 0.0
 
         print(vels(target_linear_vel, target_angular_vel))
         print(centers)
         command_left_wheel = Twist()
         command_right_wheel = Twist()
 
-        command_left_wheel.linear.x = 50.0*target_linear_vel
-        command_left_wheel.angular.z = 10*target_angular_vel
-        command_right_wheel.linear.x = 50.0*target_linear_vel
-        command_right_wheel.angular.z = 10*target_angular_vel
+        command_left_wheel.linear.x = target_linear_vel
+        command_left_wheel.angular.z = target_angular_vel
+        command_right_wheel.linear.x = target_linear_vel
+        command_right_wheel.angular.z = target_angular_vel
 
         pub_left_wheel.publish(command_left_wheel)
         pub_right_wheel.publish(command_right_wheel)
