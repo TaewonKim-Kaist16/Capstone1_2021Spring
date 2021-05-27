@@ -68,6 +68,18 @@ install/strip/fast: preinstall/fast
 	/usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
 .PHONY : install/strip/fast
 
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
+	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
@@ -123,18 +135,6 @@ test/fast: test
 
 .PHONY : test/fast
 
-# Special rule for the target install/local
-install/local: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local
-
-# Special rule for the target install/local
-install/local/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Installing only the local directory..."
-	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
-.PHONY : install/local/fast
-
 # The main all target
 all: cmake_check_build_system
 	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/jhkim/catkin_ws/Capstone1_2021Spring/build/CMakeFiles /home/jhkim/catkin_ws/Capstone1_2021Spring/build/line_tracing/CMakeFiles/progress.marks
@@ -182,81 +182,6 @@ line_tracing_node/fast:
 	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f line_tracing/CMakeFiles/line_tracing_node.dir/build.make line_tracing/CMakeFiles/line_tracing_node.dir/build
 .PHONY : line_tracing_node/fast
 
-# Convenience name for target.
-line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule
-.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_py: line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_py
-
-# fast build rule for target.
-visualization_msgs_generate_messages_py/fast:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_py.dir/build
-.PHONY : visualization_msgs_generate_messages_py/fast
-
-# Convenience name for target.
-line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule
-.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_nodejs: line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_nodejs
-
-# fast build rule for target.
-visualization_msgs_generate_messages_nodejs/fast:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_nodejs.dir/build
-.PHONY : visualization_msgs_generate_messages_nodejs/fast
-
-# Convenience name for target.
-line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule
-.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_eus: line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_eus
-
-# fast build rule for target.
-visualization_msgs_generate_messages_eus/fast:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_eus.dir/build
-.PHONY : visualization_msgs_generate_messages_eus/fast
-
-# Convenience name for target.
-line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule
-.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_lisp: line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_lisp
-
-# fast build rule for target.
-visualization_msgs_generate_messages_lisp/fast:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_lisp.dir/build
-.PHONY : visualization_msgs_generate_messages_lisp/fast
-
-# Convenience name for target.
-line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f CMakeFiles/Makefile2 line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule
-.PHONY : line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule
-
-# Convenience name for target.
-visualization_msgs_generate_messages_cpp: line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/rule
-
-.PHONY : visualization_msgs_generate_messages_cpp
-
-# fast build rule for target.
-visualization_msgs_generate_messages_cpp/fast:
-	cd /home/jhkim/catkin_ws/Capstone1_2021Spring/build && $(MAKE) -f line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build.make line_tracing/CMakeFiles/visualization_msgs_generate_messages_cpp.dir/build
-.PHONY : visualization_msgs_generate_messages_cpp/fast
-
 src/line_tracing.o: src/line_tracing.cpp.o
 
 .PHONY : src/line_tracing.o
@@ -291,18 +216,13 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... install/strip"
+	@echo "... install/local"
 	@echo "... install"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... test"
 	@echo "... line_tracing_node"
-	@echo "... visualization_msgs_generate_messages_py"
-	@echo "... install/local"
-	@echo "... visualization_msgs_generate_messages_nodejs"
-	@echo "... visualization_msgs_generate_messages_eus"
-	@echo "... visualization_msgs_generate_messages_lisp"
-	@echo "... visualization_msgs_generate_messages_cpp"
 	@echo "... src/line_tracing.o"
 	@echo "... src/line_tracing.i"
 	@echo "... src/line_tracing.s"

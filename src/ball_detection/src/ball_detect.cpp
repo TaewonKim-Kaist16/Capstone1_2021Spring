@@ -225,6 +225,7 @@ void ball_detect()
     Mat distCoeffs = Mat(1, 5, CV_32F, distortion_data);
     //undistort(image_distort, image, intrinsic, distCoeffs);
     image = image_distort;
+    flip(image, image, 1); // flip the image in horizontal direction
     //imshow("Distort", image_distort);
     //printf("x: %d y: %d\n", image.rows, image.cols);
 
@@ -511,7 +512,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "ball_detect_node");                                       //init ros nodd
     ros::NodeHandle nh;                                                              //create node handler
     image_transport::ImageTransport it(nh);                                          //create image transport and connect it to node hnalder
-    image_transport::Subscriber sub = it.subscribe("/kinect_rgb", 1, imageCallback); //create subscriber
+    image_transport::Subscriber sub = it.subscribe("/kinect_rgb_top", 1, imageCallback); //create subscriber
 
     pub_red = nh.advertise<core_msgs::ball_position>("/red_position", 100); //setting publisher
     pub_green = nh.advertise<core_msgs::ball_position>("/green_position", 100);

@@ -132,6 +132,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/jhkim/catkin_ws/Capstone1_2021Spring/build/gtest/cmake_install.cmake")
   include("/home/jhkim/catkin_ws/Capstone1_2021Spring/build/core_msgs/cmake_install.cmake")
+  include("/home/jhkim/catkin_ws/Capstone1_2021Spring/build/ball_detection/cmake_install.cmake")
   include("/home/jhkim/catkin_ws/Capstone1_2021Spring/build/data_integrate/cmake_install.cmake")
   include("/home/jhkim/catkin_ws/Capstone1_2021Spring/build/line_tracing/cmake_install.cmake")
   include("/home/jhkim/catkin_ws/Capstone1_2021Spring/build/robot_teleop/cmake_install.cmake")
