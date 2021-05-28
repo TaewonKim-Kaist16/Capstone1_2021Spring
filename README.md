@@ -24,7 +24,7 @@ The topic type is core_msgs::ball_position.
 In the core_msgs::ball_position, the direction of img_x and img_y is shown below. You can just say img_x as right direction and img_y as front direction.
 
 vision sensor view direction: ^  
-img_x direction: >  
+img_x direction: <  
 img_y direction: ^  
 
 
@@ -36,10 +36,6 @@ rosrun ball_detection ball_detection_node
 
 ### Error
 If large error in relative position or any bug occurs, record the image topic from CoppeliaSim using 'rosbag' command.
-
-The last test was done with modell F_5_6_4_kinect.ttm.
-This model's camera view changes little bit for a long time.
-Also, you can check map_ver3_with_model_F.ttt scene file.
 
 ## line_distance
 
@@ -55,7 +51,7 @@ Unit of slope is degree, and unit of distance is meter.
 
 Slope and distance informations are sorted from nearest line to farthest line.
 
-I tested it with line_detection camera(below view).
+Now, it works with top camera(front view).
 
 ### plane_info.msg
 This message has  
@@ -73,7 +69,7 @@ rosrun line_distance line_distance_node
 ```
 
 ### Error
-If some error occurs right before rosrun, check you made below line as a comment('--') in the lua script of kinect.
+Please, check you made below line as a comment('--') in the lua script of kinect.
 depth_d['is_bigendian'] = 1  
 ->  
 --depth_d['is_bigendian'] = 1  
@@ -89,6 +85,31 @@ Just drag and drop files to coppeliasim window.
 For reference, urdf file for my_robot is uploaded.
 
 
+## ball_approach
+
+This node needs opencv if you have not installed opencv follow below link.
+
+https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html
+
+This node is activated if the topic "/is_align" which has type std_msgs::Bool is true.
+
+When this node is activated, it assumes that the car is aligned with a target ball, and the distance to the ball is close enough.
+
+If this node is activated, it makes the gripper main position be -0.04.
+
+Also, it makes the gripper arm position be 0.
+
+Next, it makes the car go straight until below camera detects number of red points larger than some threshold (red_cnt_threshold).
+
+If it successfully approached the ball, it publishes "/is_align" with false to make this node disable, and also publishes "/ball_approach_success" with true.
+
+If it cannot approach ball for 2 sec in simulTime, it stops approaching and publishes "/is_align" with false to make this node disable, and also publishes "/ball_approach_success" with false.
+
+### Usage
+
+```console
+rosrun ball_approach ball_approach_node
+```
 
 ## core_msgs
 

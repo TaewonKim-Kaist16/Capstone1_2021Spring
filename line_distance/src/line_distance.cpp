@@ -366,11 +366,11 @@ void depthCallback(const sensor_msgs::ImageConstPtr &msg)
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "line_distance_node");                                     //init ros nodd
-    ros::NodeHandle nh;                                                              //create node handler
-    image_transport::ImageTransport it(nh);                                          //create image transport and connect it to node hnalder
-    image_transport::Subscriber sub = it.subscribe("/kinect_rgb", 1, imageCallback); //create subscriber
-    image_transport::Subscriber sub_depth = it.subscribe("/kinect_depth", 1, depthCallback);
+    ros::init(argc, argv, "line_distance_node");                                         //init ros nodd
+    ros::NodeHandle nh;                                                                  //create node handler
+    image_transport::ImageTransport it(nh);                                              //create image transport and connect it to node hnalder
+    image_transport::Subscriber sub = it.subscribe("/kinect_rgb_top", 1, imageCallback); //create subscriber
+    image_transport::Subscriber sub_depth = it.subscribe("/kinect_depth_top", 1, depthCallback);
 
     pub = nh.advertise<core_msgs::plane_info>("/plane_info", 100); //setting publisher
 
