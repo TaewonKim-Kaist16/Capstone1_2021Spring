@@ -39,20 +39,20 @@ void line_trace(){
 //    int rightang=0;
     Mat gray;  //assign a memory to convert into grayscale images
     Mat blur_img; // assign a memory for gaussian blur (preprocessing)
+    Mat original;
+    Mat combined;
     vector<int>centers(16); // 16 center points of segmented guidelines
     double thresh;
+    flip(buffer, buffer, 1);
+    original = buffer.clone();
     cvtColor(buffer, gray, CV_RGB2GRAY);
-    flip(gray, gray, 1);
+
     GaussianBlur(gray, blur_img, Size(5, 5), 0);
     thresh = threshold(blur_img, buffer,50, 255, THRESH_BINARY);
     rows = buffer.rows;
     cols = buffer.cols;
 
     cvtColor(buffer, buffer, CV_GRAY2BGR);
-    for (int i =0; i <rows; i++){
-        buffer.at<Vec3b>(i, cols/2) = Vec3b(0,0,255);
-        buffer.at<Vec3b>(i, cols/2+1) = Vec3b(0,0,255);
-    }   //center_datum: red line
 
     for (int i =0; i <rows; i=i+rows/16){
         int leftend = 0;
@@ -60,10 +60,16 @@ void line_trace(){
         int center;
         int point_on;
         for (int j = 1; j < cols-1; j ++){
-            if (buffer.at<Vec3b>(i, j-1) == Vec3b(0,0,0) && buffer.at<Vec3b>(i, j) != Vec3b(0,0,0))
-                leftend = j;
+
             if (buffer.at<Vec3b>(i, j) != Vec3b(0,0,0) && buffer.at<Vec3b>(i, j+1) == Vec3b(0,0,0))
+                leftend = j;
+            if (buffer.at<Vec3b>(i, j-1) == Vec3b(0,0,0) && buffer.at<Vec3b>(i, j) != Vec3b(0,0,0))
                 rightend = j;
+
+            if (buffer.at<Vec3b>(i, 0) == Vec3b(0,0,0))
+                leftend = 0;
+            if (buffer.at<Vec3b>(i, cols-1) == Vec3b(0,0,0))
+                rightend = cols-1;
         }
         if ((leftend+rightend) != 0)
             center = (leftend+rightend)/2;
@@ -79,6 +85,17 @@ void line_trace(){
         }
         centers[i/(rows/16)]= center - rows/2;
     }
+
+    for (int i =0; i <rows; i++){
+        buffer.at<Vec3b>(i, cols/2) = Vec3b(0,0,255);
+        buffer.at<Vec3b>(i, cols/2+1) = Vec3b(0,0,255);
+    }   //center_datum: red line
+    for (int j =0; j <cols; j++){
+        buffer.at<Vec3b>(rows-2, j) = Vec3b(0,0,0);
+        buffer.at<Vec3b>(rows-1, j) = Vec3b(0,0,0);
+    }   // black border b/w Binarized & Original View
+
+
 //    for (int k = 0; k<16; k++){
 //        if (centers[k]<0)
 //            leftang++;
@@ -86,16 +103,22 @@ void line_trace(){
 //            rightang++;
 //    }
     core_msgs::dist_center msg;
-    msg.size =centers.size(); //adjust the size of message. (*the size of message is varying depending on how many circles are detected)
-    msg.dist.resize(centers.size());  //adjust the size of array
+    msg.size =16; //adjust the size of message. (*the size of message is varying depending on how many circles are detected)
+    msg.dist.resize(16);  //adjust the size of array
 
     for (int k = 0; k<16; k++){
         msg.dist[k]=centers[k];
     }
-    cv::namedWindow("bottom_view", WINDOW_AUTOSIZE);
-    cv::imshow("bottom_view", buffer);  //show the image with a window
+    cv::vconcat(buffer, original, combined);
+
+    //cv::imshow("original", original);
+
+    cv::namedWindow("bottom_view_2X1", WINDOW_NORMAL);
+    cv::resizeWindow("bottom_view_2X1", 640, 480);
+    cv::imshow("bottom_view_2X1", combined);  //show the image with a window
     cv::waitKey(1);
     pub.publish(msg);
+
 }
 
 void imageCallback(const sensor_msgs::ImageConstPtr& msg)

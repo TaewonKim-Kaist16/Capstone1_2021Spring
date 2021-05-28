@@ -53,8 +53,6 @@ centers = [];
 count = 0;
 target_linear_vel   = 0.0
 target_angular_vel  = 0.0
-control_linear_vel  = 0.0
-control_angular_vel = 0.0
 
 last_linear_vel = 0.0
 last_angular_vel = 0.0
@@ -79,6 +77,8 @@ def control_vel(list):
     global last_angular_vel
     global target_linear_vel
     global target_angular_vel
+
+    print(last_vels(last_linear_vel, last_angular_vel))
 
     leftward = 0
     rightward = 0
@@ -116,6 +116,7 @@ def control_vel(list):
         return
 
     #if list[0] == 0 and list[1] == 0 and first_nonzero == -1:
+    print("list len: ", len(list)," nonzero_start: ", nonzero_start, " nonzero_last: ", nonzero_last)
 
     if abs(list[nonzero_start]) > 60 and abs(list[nonzero_start+1]) > 60 and first_nonzero == -1:
         target_angular_vel = 2.7
@@ -123,11 +124,11 @@ def control_vel(list):
 
     #elif list[0] == 0 and list[1] == 0 and first_nonzero == 1:
         #if abs(list[nonzero_start]-list[nonzero_start+1]) > 40 and abs(list[nonzero_start+1]-list[nonzero_start+2]) > 40:
-    elif ( ( abs(list[nonzero_start]) > 60 and abs(list[nonzero_start+1]+list[nonzero_start+2])/2 > 60 ) or ( abs(list[nonzero_last])>60 and abs(list[nonzero_last-1])>60 ) ) and first_nonzero == 1:
+    elif ( ( abs(list[nonzero_start]) > 60 and abs(list[nonzero_start+1]+list[nonzero_start+2])/2 > 60 ) or ( abs(list[nonzero_last])>60 and abs(list[nonzero_last-1])>60 ) or abs(list[nonzero_last])>300 ) and first_nonzero == 1:
             target_angular_vel = -2.7
             target_linear_vel = 5
     else:
-        target_linear_vel = 4.5
+        target_linear_vel = 4.7
         #if list[0] < 0:
         if leftward > rightward:
             target_angular_vel  = 0.8
@@ -145,6 +146,9 @@ def control_vel(list):
 
 def vels(target_linear_vel, target_angular_vel):
     return "currently:\tlinear vel %s\t angular vel %s " % (target_linear_vel,target_angular_vel)
+
+def last_vels(last_linear_vel, last_angular_vel):
+    return "last vels:\tlinear vel %s\t angular vel %s " % (last_linear_vel, last_angular_vel)
 
 def makeSimpleProfile(output, input, slop):
     if input > output:
@@ -202,13 +206,11 @@ if __name__=="__main__":
     while not rospy.is_shutdown():
         sub = rospy.Subscriber("/distance", dist_center, callback)
 
-        target_linear_vel = 4.5
+        target_linear_vel = 4.7
         if len(centers)>0:
             control_vel(centers)
         else:
             target_angular_vel = 0.0
-        control_linear_vel  = 0.0
-        control_angular_vel = 0.0
 
         print(vels(target_linear_vel, target_angular_vel))
         print(centers)

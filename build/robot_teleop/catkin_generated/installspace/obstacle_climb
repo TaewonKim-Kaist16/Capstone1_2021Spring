@@ -113,8 +113,8 @@ if __name__=="__main__":
             pub_rear_actuator.publish(command_rear_actuator)
 
         elif duration >= 6 and duration < 8:                # 2sec for step 4
-            command_left_wheel.linear.x = 5.0
-            command_right_wheel.linear.x = 5.0
+            command_left_wheel.linear.x = 4.8
+            command_right_wheel.linear.x = 4.8
             command_rear_actuator.angular.y = 2.94
             command_gripper.linear.z = -0.03
             pub_rear_actuator.publish(command_rear_actuator)
