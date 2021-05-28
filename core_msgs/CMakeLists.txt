@@ -13,6 +13,7 @@ add_message_files( DIRECTORY msg
   dist_center.msg
   ball_position.msg
   multiarray.msg
+  plane_info.msg
 )
 
 ## Generate services in the 'srv' folder
