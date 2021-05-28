@@ -69,7 +69,7 @@ std::vector<float> pixel2point(Point center, float radius)
     Yc = (intrinsic_data[0] * fball_diameter) / (2 * radius);
     Xc = -u * Yc;
     Zc = -v * Yc;
-    X = intrinsic_data[2] - x;
+    X = x - intrinsic_data[2];
     Z = intrinsic_data[5] - y;
     a = radius * radius;
     b = (a + X * X + Z * Z + f * f) * fball_radius * fball_radius;

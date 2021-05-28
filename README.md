@@ -24,7 +24,7 @@ The topic type is core_msgs::ball_position.
 In the core_msgs::ball_position, the direction of img_x and img_y is shown below. You can just say img_x as right direction and img_y as front direction.
 
 vision sensor view direction: ^  
-img_x direction: <  
+img_x direction: >  
 img_y direction: ^  
 
 
