@@ -93,14 +93,14 @@ def control_vel(list):
                 first_nonzero = -1
                 nonzero_start = i
                 if nonzero_start >= 13:
-                    nozero_start == 13
+                    nonzero_start == 13
         elif list[i] > 0:
             rightward+=1;
             if first_nonzero == 0:
                 first_nonzero = 1
                 nonzero_start = i
                 if nonzero_start >= 13:
-                    nozero_start == 13
+                    nonzero_start == 13
         elif list[i] == 0:
             outline+=1
     for i in range(len(list), 0, -1):
