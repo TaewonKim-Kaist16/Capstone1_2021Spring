@@ -161,7 +161,7 @@ void alignCallback(const std_msgs::BoolConstPtr &msg)
 void timeCallback(const std_msgs::Float64ConstPtr &msg)
 {
     curr_time = msg->data;
-    if (is_align && curr_time > 2 + start_time)
+    if (is_align && curr_time > 4 + start_time)
     {
         printf("approach_failed! try again.\n");
         geometry_msgs::Twist vel_msg;

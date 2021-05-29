@@ -103,7 +103,7 @@ Next, it makes the car go straight until below camera detects number of red poin
 
 If it successfully approached the ball, it publishes "/is_align" with false to make this node disable, and also publishes "/ball_approach_success" with true.
 
-If it cannot approach ball for 2 sec in simulTime, it stops approaching and publishes "/is_align" with false to make this node disable, and also publishes "/ball_approach_success" with false.
+If it cannot approach ball for 4 sec in simulTime, it stops approaching and publishes "/is_align" with false to make this node disable, and also publishes "/ball_approach_success" with false.
 
 ### Usage
 
