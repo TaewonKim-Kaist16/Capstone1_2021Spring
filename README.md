@@ -95,13 +95,15 @@ This node is activated if the topic "/is_align" which has type std_msgs::Bool is
 
 When this node is activated, it assumes that the car is aligned with a target ball, and the distance to the ball is close enough.
 
-If this node is activated, it makes the gripper main position be -0.04.
+If this node is activated, it makes the gripper main position be -0.055.
 
 Also, it makes the gripper arm position be 0.
 
 Next, it makes the car go straight until below camera detects number of red points larger than some threshold (red_cnt_threshold).
 
 If it successfully approached the ball, it publishes "/is_align" with false to make this node disable, and also publishes "/ball_approach_success" with true.
+
+Also, if it successfully approached, it tights gripper arm to 0.035.
 
 If it cannot approach ball for 4 sec in simulTime, it stops approaching and publishes "/is_align" with false to make this node disable, and also publishes "/ball_approach_success" with false.
 
