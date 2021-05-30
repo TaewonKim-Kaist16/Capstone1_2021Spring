@@ -113,6 +113,38 @@ If it cannot approach ball for 4 sec in simulTime, it stops approaching and publ
 rosrun ball_approach ball_approach_node
 ```
 
+
+## goal_scoring
+
+This node needs opencv if you have not installed opencv follow below link.
+
+https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html
+
+This node is activated if the topic "/is_goal" which has type std_msgs::Bool is true.
+
+When this node is activated, it assumes that the car is aligned with the green ball, and the car can go to the goal by just going straight.
+
+If this node is activated, it makes the gripper main position be 0.2(maximum).
+
+Next, it makes the car go straight until the top camera detect the closest green point has depth less than some threshold(green_distance_threshold).
+
+Then it makes the gripper arm position be 0.
+
+Next, it makes the car go back until the top camera detect the closest green point has depth larger than some threshold(green_distance_after).
+
+Then it makes the gripper main position be 0.
+
+If it successfully scored, it publishes "/is_goal" with false to make this node disable, and also publishes "/goal_success" with true.
+
+If it cannot approach goal for 6 sec in simulTime, it stops approaching and publishes "/is_goal" with false to make this node disable, and also publishes "/goal_success" with false.
+
+### Usage
+
+```console
+rosrun goal_scoring goal_scoring_node
+```
+
+
 ## core_msgs
 
 A package for defining custom messages used in all codes.
