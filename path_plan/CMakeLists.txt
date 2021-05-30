@@ -16,6 +16,17 @@ find_package(catkin REQUIRED COMPONENTS
   visualization_msgs
 )
 
+add_message_files( DIRECTORY msg
+  FILES
+  operation.msg
+  mode.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  geometry_msgs
+  std_msgs
+)
 
 find_package( OpenCV REQUIRED )
 find_package( cv_bridge REQUIRED )
