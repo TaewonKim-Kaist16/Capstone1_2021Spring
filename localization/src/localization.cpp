@@ -4,6 +4,7 @@
 #include <cmath>
 #include <std_msgs/String.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Float64.h>
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <geometry_msgs/Twist.h>
@@ -35,7 +36,7 @@ geometry_msgs::Twist vel_msg;
 localization::multi_position obstacle_data;
 localization::multi_position red_balls_data;
 localization::multi_position green_ball_data;
-std_msgs::Float32 timestamp_start, timestamp_current;
+float timestamp_start, timestamp_current;
 float ang_error, ang_error_pre, ang_error_dot, ang_error_tot;
 
 int mode = 1;
@@ -238,8 +239,8 @@ void mode_1_rearrage(double th) {
 
     float kp=0.1,kd=0.0001,ki=0.01;
 
-    cout << "current time : " << timestamp_current.data << " start time : " << timestamp_start.data << endl;
-    float dt = max(timestamp_current.data - timestamp_start.data,(float)0.001);
+    cout << "current time : " << timestamp_current<< " start time : " << timestamp_start<< endl;
+    float dt = max(timestamp_current- timestamp_start,(float)0.001);
 
     ang_error = th - 90;
     ang_error_dot = (ang_error - ang_error_pre) / dt;
@@ -262,7 +263,7 @@ void mode_1_rearrage(double th) {
     }
 
     else {
-        if (timestamp_current.data - timestamp_start.data > 0.25) {
+        if (timestamp_current- timestamp_start> 0.25) {
             mode = 2;
             timestamp_start = timestamp_current;
         }
@@ -273,7 +274,7 @@ void mode_2_goforward(double th) {
     cout << "mode2 go forward..." << endl;
     
     float dt = 4;
-    if (timestamp_current.data - timestamp_start.data < dt) {
+    if (timestamp_current- timestamp_start< dt) {
         vel_msg.linear.x = 4;
         vel_msg.angular.z = (th-90)*0.5;
     }
@@ -632,8 +633,8 @@ void green_ball_cb(core_msgs::ball_position ball_pose) {
     }
 }
 
-void time_cb(std_msgs::Float32 time) {
-    timestamp_current = time;
+void time_cb(const std_msgs::Float64ConstPtr &msg){
+    timestamp_current = msg->data;
     // cout << "time : " << timestamp_current << endl;
 }
 
@@ -642,7 +643,7 @@ int main(int argc, char **argv){
     ros::init(argc, argv, "localization");
     ros::NodeHandle nh;
 
-    ros::Subscriber sub_time = nh.subscribe("/simTime",1,time_cb);
+    ros::Subscriber sub_time = nh.subscribe<std_msgs::Float64>("/simulTime", 1, time_cb);
     ros::Subscriber sub_lidar = nh.subscribe("/scan", 1, lidar_cb);
     ros::Subscriber sub_red_ball = nh.subscribe("/red_position",1,red_ball_cb);
     ros::Subscriber sub_green_ball = nh.subscribe("/green_position",1,green_ball_cb);
