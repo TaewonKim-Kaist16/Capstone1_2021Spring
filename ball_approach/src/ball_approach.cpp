@@ -28,9 +28,9 @@ int low_H = 0, low_S = 72, low_V = 52;
 int high_H = max_value_H, high_S = max_value, high_V = max_value;
 int low_H_red1 = 0, low_H_red2 = 120, low_H_green = 53;
 int high_H_red1 = 11, high_H_red2 = max_value_H, high_H_green = 80;
-int red_cnt_threshold = 150000;
-int slow_threshold = 100000;
-bool is_align;
+int red_cnt_threshold = 145000;
+int slow_threshold = 110000;
+bool is_align = true;
 
 Mat image_distort, image_brg, mask;
 ros::Publisher pub;
@@ -82,12 +82,21 @@ void ball_approach()
         std_msgs::Bool is_align_pub;
         is_align_pub.data = false;
         pub_is_align.publish(is_align_pub);
+        geometry_msgs::Twist arm_tight;
+        arm_tight.angular.x = 0;
+        arm_tight.angular.y = 0;
+        arm_tight.angular.z = 0;
+        arm_tight.linear.x = 0;
+        arm_tight.linear.y = 0.035;
+        arm_tight.linear.z = 0;
+        pub_grip_arm.publish(arm_tight);
+        waitKey(1000);
     }
     else
     {
         if (red_cnt >= slow_threshold)
         {
-            vel_msg.linear.x = 1.5;
+            vel_msg.linear.x = 1.8;
         }
         else
         {
@@ -142,7 +151,7 @@ void alignCallback(const std_msgs::BoolConstPtr &msg)
         grip_down.angular.z = 0;
         grip_down.linear.x = 0;
         grip_down.linear.y = 0;
-        grip_down.linear.z = -0.04;
+        grip_down.linear.z = -0.055;
         pub_grip_main.publish(grip_down);
         start_time = curr_time;
         geometry_msgs::Twist arm_wide;
@@ -161,7 +170,7 @@ void alignCallback(const std_msgs::BoolConstPtr &msg)
 void timeCallback(const std_msgs::Float64ConstPtr &msg)
 {
     curr_time = msg->data;
-    if (is_align && curr_time > 2 + start_time)
+    if (is_align && curr_time > 4 + start_time)
     {
         printf("approach_failed! try again.\n");
         geometry_msgs::Twist vel_msg;
