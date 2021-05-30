@@ -10,6 +10,7 @@ find_package(catkin REQUIRED
 
 add_message_files( DIRECTORY msg
   FILES
+  dist_center.msg
   ball_position.msg
   multiarray.msg
 )

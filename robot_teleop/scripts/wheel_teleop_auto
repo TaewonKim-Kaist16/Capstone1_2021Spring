@@ -1,0 +1,122 @@
+import rospy
+from geometry_msgs.msg import Twist
+from std_msgs.msg import Float64 as joint_command
+import sys, select, os
+if os.name == 'nt':
+  import msvcrt
+else:
+  import tty, termios
+
+BURGER_MAX_LIN_VEL = 1.00
+BURGER_MAX_ANG_VEL = 2.84
+
+WAFFLE_MAX_LIN_VEL = 0.26
+WAFFLE_MAX_ANG_VEL = 1.82
+
+LIN_VEL_STEP_SIZE = 0.01
+ANG_VEL_STEP_SIZE = 0.1
+
+msg = """
+Control Your TurtleBot3!
+---------------------------
+Moving around:
+        w
+   a    s    d
+        x
+
+w/x : increase/decrease linear velocity
+a/d : increase/decrease angular velocity
+
+space key, s : force stop
+
+CTRL-C to quit
+"""
+
+e = """
+Communications Failed
+"""
+
+def vels(target_linear_vel, target_angular_vel):
+    return "currently:\tlinear vel %s\t angular vel %s " % (target_linear_vel,target_angular_vel)
+
+def makeSimpleProfile(output, input, slop):
+    if input > output:
+        output = min( input, output + slop )
+    elif input < output:
+        output = max( input, output - slop )
+    else:
+        output = input
+
+    return output
+
+def constrain(input, low, high):
+    if input < low:
+      input = low
+    elif input > high:
+      input = high
+    else:
+      input = input
+
+    return input
+
+def checkLinearLimitVelocity(vel):
+    if turtlebot3_model == "burger":
+      vel = constrain(vel, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL)
+    elif turtlebot3_model == "waffle" or turtlebot3_model == "waffle_pi":
+      vel = constrain(vel, -WAFFLE_MAX_LIN_VEL, WAFFLE_MAX_LIN_VEL)
+    else:
+      vel = constrain(vel, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL)
+
+    return vel
+
+def checkAngularLimitVelocity(vel):
+    if turtlebot3_model == "burger":
+      vel = constrain(vel, -BURGER_MAX_ANG_VEL, BURGER_MAX_ANG_VEL)
+    elif turtlebot3_model == "waffle" or turtlebot3_model == "waffle_pi":
+      vel = constrain(vel, -WAFFLE_MAX_ANG_VEL, WAFFLE_MAX_ANG_VEL)
+    else:
+      vel = constrain(vel, -BURGER_MAX_ANG_VEL, BURGER_MAX_ANG_VEL)
+
+    return vel
+
+def vel_cb(vel_msg):
+  target_linear_vel = vel_msg.linear.y
+  target_angular_vel = vel_msg.angular.z
+
+  command_left_wheel = joint_command()
+  command_right_wheel = joint_command()
+
+  vel_msg = Twist()
+  vel_msg.linear.x = 0
+  vel_msg.linear.z = 0
+  vel_msg.angular.x = 0
+  vel_msg.angular.y = 0
+
+  vel_msg.linear.y = target_linear_vel
+  vel_msg.angular.z = target_angular_vel
+
+  command_left_wheel.data = 50.0*target_linear_vel - 10.0*target_angular_vel
+  command_right_wheel.data = 50.0*target_linear_vel + 10.0*target_angular_vel
+  pub_left_wheel.publish(command_left_wheel)
+  pub_right_wheel.publish(command_right_wheel)
+
+  
+
+if __name__=="__main__":
+    if os.name != 'nt':
+        settings = termios.tcgetattr(sys.stdin)
+
+    rospy.init_node('wheel_teleop_auto')
+    pub_left_wheel = rospy.Publisher('joint_front_left_wheel', joint_command, queue_size=10)
+    pub_right_wheel = rospy.Publisher('joint_front_right_wheel', joint_command, queue_size=10)
+    pub_actuator = rospy.Publisher('turtlebot3_waffle_sim/joint1_position_controller/command', joint_command, queue_size=10)
+
+    rospy.Subscriber('cmd_vel',Twist,vel_cb)
+
+    turtlebot3_model = rospy.get_param("model", "burger")
+
+    rospy.spin()
+
+
+    if os.name != 'nt':
+        termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
