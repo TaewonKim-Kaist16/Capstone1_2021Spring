@@ -28,6 +28,7 @@ geometry_msgs::Twist vel_msg;
 std_msgs::String sys_cmd;
 bool flag_motion_cb = false;
 int process_num;
+float driving_min_dist=1000;
 
 geometry_msgs::Point wobble_ref,wobble_p1, wobble_p2;
 geometry_msgs::Point harvesting_p1;
@@ -35,6 +36,7 @@ geometry_msgs::Point harvesting_p1;
 localization::multi_position red_balls_data;
 bool is_align = false;
 bool ball_approach_sucess = false;
+bool is_goal = false;
 
 float dist_error, dist_error_pre, dist_error_dot, dist_error_tot;
 float ang_error, ang_error_pre, ang_error_dot, ang_error_tot;
@@ -42,6 +44,7 @@ float ang_error, ang_error_pre, ang_error_dot, ang_error_tot;
 float timestamp_start, timestamp_current;
 
 ros::Publisher pub_is_align;
+ros::Publisher pub_is_goal;
 
 float convert_ang(float angle, int option, bool use_radian=false) {
     /*  
@@ -145,6 +148,10 @@ void go_forward(float x, float y,float max_lin=4.0,float max_ang=1.5) {
     if (ang_vel >= 0) { vel_msg.angular.z = min(ang_vel, max_ang); }
     else { vel_msg.angular.z = max(ang_vel, -max_ang); }
 
+    if (ball_approach_sucess == true) {
+        vel_msg.angular.z = vel_msg.angular.z - 0.2;
+    }
+
     float dt = max(timestamp_current - timestamp_start,(float)0.01);
     dist_error = distance;
     dist_error_dot = (dist_error - dist_error_pre) / dt;
@@ -152,6 +159,59 @@ void go_forward(float x, float y,float max_lin=4.0,float max_ang=1.5) {
 
     float lin_vel = kp*dist_error + kd*dist_error_dot + ki*dist_error_tot;
     vel_msg.linear.x = min(lin_vel,max_lin);
+
+    timestamp_start = timestamp_current;
+
+    cout << "dt : " << dt << endl;
+    cout << "error : " << dist_error << " | " << kp*dist_error << endl;
+    cout << "error dot : " << dist_error_dot << " | " << kd*dist_error_dot << endl;
+    cout << "error tot : " << dist_error_tot << " | " << ki*dist_error_tot << endl;
+    cout << "ang vel : " << vel_msg.angular.z << endl;
+    cout << "lin vel : " << vel_msg.linear.x << endl;
+
+}
+
+
+void go_backward(float x, float y,float max_lin=2.0,float max_ang=0) {
+    float kp=3,kd=0.02,ki=0.05;
+    float kp_ang=1,kd_ang=0.002,ki_ang=0.02;
+    dist_error_pre = dist_error;
+    
+
+    float x_diff = x - robot_geometry.pose.x;
+    float y_diff = y - robot_geometry.pose.y;
+    float distance = sqrt(pow(x_diff,2)+pow(y_diff,2));
+
+    float x_heading = 2*robot_geometry.pose.x - x;
+    float y_heading = 2*robot_geometry.pose.y - y;
+
+    float angle = atan2(y_heading,x_heading);
+    
+    float rob_ang = convert_ang(robot_geometry.angle,1,true);
+    float direction = convert_ang(angle,2,true);
+
+    if (abs(direction - rob_ang) < abs(direction - (rob_ang + 360))) {
+        ang_error = direction - rob_ang;
+    }
+    else {
+        ang_error = direction - (rob_ang + 360);
+    }
+
+    float ang_vel = kp_ang*ang_error+kd_ang*ang_error_dot+ki_ang*ang_error_tot;
+    if (ang_vel >= 0) { vel_msg.angular.z = min(ang_vel, max_ang); }
+    else { vel_msg.angular.z = max(ang_vel, -max_ang); }
+
+    if (ball_approach_sucess == true) {
+        vel_msg.angular.z = vel_msg.angular.z - 0.2;
+    }
+
+    float dt = max(timestamp_current - timestamp_start,(float)0.01);
+    dist_error = distance;
+    dist_error_dot = (dist_error - dist_error_pre) / dt;
+    dist_error_tot = dist_error * dt + dist_error_tot;
+
+    float lin_vel = kp*dist_error + kd*dist_error_dot + ki*dist_error_tot;
+    vel_msg.linear.x = -min(lin_vel,max_lin);
 
     timestamp_start = timestamp_current;
 
@@ -185,7 +245,7 @@ void cal_wobbling_range() {
 
 
 void cal_harvesting_point() {
-    float margin = 0.3;
+    float margin = 0.2;
 
     float x_diff = motion.x - robot_geometry.pose.x;
     float y_diff = motion.y - robot_geometry.pose.y;
@@ -211,8 +271,39 @@ void move_single_point(){
         }
         else if (process_num == 1) {
             go_forward(motion.x, motion.y);
-            if (dist_error < 0.05) {
+            if (dist_error < 0.05 || dist_error > driving_min_dist+0.07) {
                 process_num = 2;
+            }
+            else {
+                if (dist_error < driving_min_dist) {
+                    driving_min_dist = dist_error;
+                }
+            }
+        }
+        else {
+            flag_motion_cb = false;
+            dist_error=0, dist_error_pre=0, dist_error_dot=0, dist_error_tot=0;
+            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
+            driving_min_dist = 1000;
+        }
+    }
+    else {
+        vel_msg.linear.x = 0;
+        vel_msg.angular.z = 0;
+        process_num = 0;
+    }
+}
+
+
+void rotation() {
+    if (flag_motion_cb == true) {
+        cout << "process num : " << process_num << endl;
+        if (process_num == 0) {
+            arrange_angle(motion.x, motion.y);
+            cout << "error : " << ang_error << " diff : " << abs(ang_error - ang_error_pre) << endl;
+            if (abs(ang_error) < 1*M_PI/180 && abs(ang_error - ang_error_pre) < 1*M_PI/180 ) {
+                ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
+                process_num = 1;
             }
         }
         else {
@@ -225,7 +316,7 @@ void move_single_point(){
         vel_msg.linear.x = 0;
         vel_msg.angular.z = 0;
         process_num = 0;
-    }
+    }        
 }
 
 
@@ -290,10 +381,15 @@ void harvesting(){
         }
         else if (process_num == 1) {
             go_forward(harvesting_p1.x, harvesting_p1.y);
-            if (dist_error < 0.04) {
+            if (dist_error < 0.04  || dist_error > driving_min_dist + 0.07) {
                 ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
                 process_num = 2;
             }
+            else {
+                if (dist_error < driving_min_dist) {
+                    driving_min_dist = dist_error;
+                }
+            }            
         }
         else if (process_num == 2) {
             float min_dist = 1000;
@@ -314,13 +410,6 @@ void harvesting(){
                 is_align = true;
             }
         }
-        // else if (process_num == 3) {
-        //     go_forward(x,y,1,0);
-        //     if (dist_error < 0.1) {
-        //         process_num = 4;
-        //         is_align = true;
-        //     }
-        // }
         else {
             std_msgs::Bool is_align_pub;
             is_align_pub.data = true;
@@ -328,7 +417,8 @@ void harvesting(){
 
             flag_motion_cb = false;
             dist_error=0, dist_error_pre=0, dist_error_dot=0, dist_error_tot=0;
-            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;                
+            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;       
+            driving_min_dist = 1000;
         } 
     }
     else {
@@ -338,6 +428,91 @@ void harvesting(){
     }
 }
 
+
+void scoring() {
+    if (flag_motion_cb == true) {
+        cout << "process num : " << process_num << endl;
+        if (process_num == 0) {
+            arrange_angle(1.5, 4.3);
+            cout << "error : " << ang_error << " diff : " << abs(ang_error - ang_error_pre) << endl;
+            if (abs(ang_error) < 2*M_PI/180 && abs(ang_error - ang_error_pre) < 1*M_PI/180 ) {
+                ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
+                process_num = 1;
+            }
+        }
+        else if (process_num == 1) {
+            go_forward(1.5, 4.3, 3, 2);
+            if (dist_error < 0.1  || dist_error > driving_min_dist + 0.07) {
+                process_num = 2;
+            }
+            else {
+                if (dist_error < driving_min_dist) {
+                    driving_min_dist = dist_error;
+                }
+            }
+        }
+        else if (process_num == 2) {
+            arrange_angle(1.5,5);
+            if (abs(ang_error) < 2*M_PI/180 && abs(ang_error - ang_error_pre) < 2*M_PI/180 ) {
+                ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
+                process_num = 3;
+                is_goal = true;
+            }
+        }
+        else {
+            std_msgs::Bool is_goal_pub;
+            is_goal_pub.data = true;
+            pub_is_goal.publish(is_goal_pub);
+
+            flag_motion_cb = false;
+            ball_approach_sucess = false;
+
+            dist_error=0, dist_error_pre=0, dist_error_dot=0, dist_error_tot=0;
+            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;               
+            driving_min_dist = 1000;
+        }
+    }
+    else {
+        vel_msg.linear.x = 0;
+        vel_msg.angular.z = 0;
+        process_num = 0;
+    }
+
+}
+
+
+void reverse(){
+
+    if (flag_motion_cb == true) {
+        cout << "process num : " << process_num << endl;
+        if (process_num == 0) {
+            float x_heading = 2*robot_geometry.pose.x - motion.x;
+            float y_heading = 2*robot_geometry.pose.y - motion.y;
+            arrange_angle(x_heading, y_heading);
+            cout << "error : " << ang_error << " diff : " << abs(ang_error - ang_error_pre) << endl;
+            if (abs(ang_error) < 2*M_PI/180 && abs(ang_error - ang_error_pre) < 1*M_PI/180 ) {
+                ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
+                process_num = 1;
+            }
+        }
+        else if (process_num == 1) {
+            go_backward(motion.x, motion.y);
+            if (dist_error < 0.15) {
+                process_num = 2;
+            }
+        }
+        else {
+            flag_motion_cb = false;
+            dist_error=0, dist_error_pre=0, dist_error_dot=0, dist_error_tot=0;
+            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
+        }
+    }
+    else {
+        vel_msg.linear.x = 0;
+        vel_msg.angular.z = 0;
+        process_num = 0;
+    }
+}
 
 
 void init_vel() {
@@ -359,11 +534,19 @@ void sys_cb(std_msgs::String msg) {
         }
         else if (motion.msg == "rotation") {
             // cout << "rotate heading to point " << motion.x << ", " << motion.y << endl;
-            arrange_angle(motion.x,motion.y);
+            rotation();
         }
         else if (motion.msg == "harvesting") {
             // cout << "harvesting motion at point " << motion.x << ", " << motion.y << endl;
             harvesting();
+        }
+        else if (motion.msg == "scoring") {
+            // cout << "scoring motion" << endl;
+            scoring();
+        }
+        else if (motion.msg == "reverse") {
+            // cout << "reverse motion" << endl;
+            reverse();
         }
         else if (motion.msg == "") {}
         else {
@@ -415,6 +598,13 @@ void align_cb(std_msgs::Bool msg) {
     }
 }
 
+void goal_cb(std_msgs::Bool msg) {
+    is_goal = msg.data;
+    if (is_goal == false) {
+        flag_motion_cb = false;
+    }
+}
+
 void ball_approach_success_cb(std_msgs::Bool msg) {
     ball_approach_sucess = msg.data;
 }
@@ -431,10 +621,12 @@ int main(int argc, char **argv){
     ros::Subscriber sub_robot = nh.subscribe("/map/data/robot",1,robot_cb);
     ros::Subscriber sub_rb = nh.subscribe("/map/data/red_ball",1,red_ball_cb);
     ros::Subscriber sub_is_align = nh.subscribe("/is_align", 1, align_cb);
+    ros::Subscriber sub_is_goal = nh.subscribe("/is_goal", 1, goal_cb);
     ros::Subscriber sub_ball_approach = nh.subscribe("/ball_approach_success",1,ball_approach_success_cb);
 
     ros::Publisher pub_vel = nh.advertise<geometry_msgs::Twist>("/cmd_vel",1);
     pub_is_align = nh.advertise<std_msgs::Bool>("/is_align", 10);
+    pub_is_goal = nh.advertise<std_msgs::Bool>("/is_goal", 10);
 
     init_vel();
 
@@ -447,6 +639,9 @@ int main(int argc, char **argv){
         }
         else if (is_align == true) {
             cout << "ball_approach activate" << endl;
+        }
+        else if (is_goal == true) {
+            cout << "ball_scoring activate" << endl;
         }
         else {
             pub_vel.publish(vel_msg);
