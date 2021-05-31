@@ -31,7 +31,7 @@ int high_H_red1 = 11, high_H_red2 = max_value_H, high_H_green = 80;
 float green_distance_threshold = 0.18;
 float slow_threshold = 0.23;
 float green_distance_after = 0.35;
-float grip_wait_time = 2.5;
+float grip_wait_time = 2.8;
 bool is_goal = false;
 bool is_goal_temp = false;
 bool after_goal = false;
@@ -105,6 +105,14 @@ void goal_approach()
             //waitKey(15000);
             after_goal_end = true;
             start_time = curr_time;
+	    geometry_msgs::Twist arm_wide;
+            arm_wide.angular.x = 0;
+            arm_wide.angular.y = 0;
+            arm_wide.angular.z = 0;
+            arm_wide.linear.x = 0;
+            arm_wide.linear.y = 0;
+            arm_wide.linear.z = 0;
+            pub_grip_arm.publish(arm_wide);
         }
         return;
     }
@@ -132,7 +140,7 @@ void goal_approach()
         arm_wide.angular.y = 0;
         arm_wide.angular.z = 0;
         arm_wide.linear.x = 0;
-        arm_wide.linear.y = 0;
+        arm_wide.linear.y = -0.03;
         arm_wide.linear.z = 0;
         pub_grip_arm.publish(arm_wide);
         after_goal = true;
@@ -200,7 +208,7 @@ void goalCallback(const std_msgs::BoolConstPtr &msg)
         grip_up.angular.z = 0;
         grip_up.linear.x = 0;
         grip_up.linear.y = 0;
-        grip_up.linear.z = 0.2;
+        grip_up.linear.z = 0.23;
         pub_grip_main.publish(grip_up);
         after_goal = false;
         after_goal_end = false;
