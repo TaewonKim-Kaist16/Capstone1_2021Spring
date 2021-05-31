@@ -1,6 +1,10 @@
 #include <ros/ros.h>
 #include "string.h"
+#include <sstream>
 #include <cmath>
+#include <std_msgs/String.h>
+#include <std_msgs/Float32.h>
+#include <std_msgs/Float64.h>
 #include <sensor_msgs/LaserScan.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <geometry_msgs/Twist.h>
@@ -32,11 +36,11 @@ geometry_msgs::Twist vel_msg;
 localization::multi_position obstacle_data;
 localization::multi_position red_balls_data;
 localization::multi_position green_ball_data;
-
-ros::Time timeStamp;
+float timestamp_start, timestamp_current;
+float ang_error, ang_error_pre, ang_error_dot, ang_error_tot;
 
 int mode = 1;
-int wait_count = 0;
+// int wait_count = 0;
 
 struct WALL {
     float x,y,x_dir,y_dir;
@@ -134,7 +138,7 @@ void transform_rel2abs(int idx1, int idx2, geometry_msgs::Point ref_point1, geom
     float previous_y = robot_geometry.pose.y;
     float dist = sqrt(pow(p1-previous_x,2)+pow(p2-previous_y,2));
 
-    if (dist < 0.1) {
+    if (dist < 0.4) {
         robot_geometry.pose.x = p1;
         robot_geometry.pose.y = p2;
         robot_geometry.angle = atan2(r2,r1);
@@ -233,21 +237,35 @@ void mode_1_rearrage(double th) {
 
     cout << "mode1 rearranging..." << endl;
 
-    if (abs(th-90) > 5) {
-        wait_count = 0;
-        if (th > 90) {
-            vel_msg.angular.z = max(abs(th-90)*0.01,0.15);
-        }
-        else{
-            vel_msg.angular.z = -max(abs(th-90)*0.01,0.15);
-        }
+    float kp=0.1,kd=0.0001,ki=0.01;
+
+    cout << "current time : " << timestamp_current<< " start time : " << timestamp_start<< endl;
+    float dt = max(timestamp_current- timestamp_start,(float)0.001);
+
+    ang_error = th - 90;
+    ang_error_dot = (ang_error - ang_error_pre) / dt;
+    ang_error_tot = ang_error * dt + ang_error_tot;
+
+    if (abs(th-90) > 3) {
+
+        float ang_vel = kp*ang_error+kd*ang_error_dot+ki*ang_error_tot;
+        if (ang_vel >= 0) { vel_msg.angular.z = min(ang_vel, (float)4); }
+        else { vel_msg.angular.z = max(ang_vel, (float)-1); }
+
+        timestamp_start = timestamp_current;
+    
+        cout << "dt : " << dt << endl;
+        cout << "error : " << ang_error << " | " << kp*ang_error << endl;
+        cout << "error dot : " << ang_error_dot << " | " << kd*ang_error_dot << endl;
+        cout << "error tot : " << ang_error_tot << " | " << ki*ang_error_tot << endl;
+        cout << "ang vel : " << vel_msg.angular.z << endl;
+
     }
+
     else {
-        wait_count ++;
-        if (wait_count > 20) {
+        if (timestamp_current- timestamp_start> 0.25) {
             mode = 2;
-            wait_count = 0;
-            timeStamp = ros::Time::now();
+            timestamp_start = timestamp_current;
         }
     }
 };
@@ -255,13 +273,13 @@ void mode_1_rearrage(double th) {
 void mode_2_goforward(double th) {
     cout << "mode2 go forward..." << endl;
     
-    ros::Duration dt = ros::Duration(17);
-    if (ros::Time::now()-timeStamp < dt) {
-        vel_msg.linear.y = 0.1;
-        vel_msg.angular.z = (th-90)*0.01;
+    float dt = 4;
+    if (timestamp_current- timestamp_start< dt) {
+        vel_msg.linear.x = 4;
+        vel_msg.angular.z = (th-90)*0.5;
     }
     else {
-        vel_msg.linear.y = 0;
+        vel_msg.linear.x = 0;
         vel_msg.angular.z = 0;
         mode = 3;
     }
@@ -274,21 +292,29 @@ void mode_3_setRef() {
     WALL parallel_wall;
     WALL verticle_wall;
 
+    vel_msg.linear.x = 0;
+    vel_msg.angular.z = 0;
+
     int y_p = -100;
     for (int i=1;i<4;i++) {
         float a = relative_position.walls[i].x_dir;
         float b = relative_position.walls[i].y_dir;
         float th2 = atan2(b,a)*180/M_PI;
 
-        if ((abs(th2)-5) < 0 || (abs(th2-180)-5) < 0) {
-            if (y_p < relative_position.walls[i].y || relative_position.walls[i].y < 0) {
+        if ((abs(th2)-10) < 0 || (abs(th2-180)-10) < 0) {
+            cout << i << " th verticle wall" << endl;
+            cout << "y value : " << relative_position.walls[i].y << endl;
+            if (y_p < relative_position.walls[i].y && relative_position.walls[i].y < 0) {
                 verticle_wall = relative_position.walls[i];
+                y_p = (int) relative_position.walls[i].y;
             }
         }
         else {
             parallel_wall = relative_position.walls[i];
         }
     }
+
+    cout << "verticle wall y : " << verticle_wall.y << endl;
 
     float coeff_ver[3];
     get_wall_coeff(verticle_wall,coeff_ver);
@@ -482,7 +508,7 @@ void lidar_cb(sensor_msgs::LaserScan msg){
     seg.setModelType (pcl::SACMODEL_LINE);
     seg.setMethodType (pcl::SAC_RANSAC);
     seg.setMaxIterations (100);
-    seg.setDistanceThreshold (0.02);
+    seg.setDistanceThreshold (0.03);
 
     for(int i = 0; i < 4; i++){
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_line (new pcl::PointCloud<pcl::PointXYZ> ());
@@ -530,7 +556,7 @@ void lidar_cb(sensor_msgs::LaserScan msg){
 
         std::vector<pcl::PointIndices> cluster_indices;
         pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
-        ec.setClusterTolerance (0.05);
+        ec.setClusterTolerance (0.03);
         ec.setMinClusterSize (5);
         ec.setMaxClusterSize (40);
         ec.setSearchMethod (tree);
@@ -587,7 +613,6 @@ void lidar_cb(sensor_msgs::LaserScan msg){
 
 }
 
-
 void red_ball_cb(core_msgs::ball_position ball_pose) {
     for (int i=0; i<6; i++) {
         if (i < ball_pose.size) {
@@ -608,28 +633,34 @@ void green_ball_cb(core_msgs::ball_position ball_pose) {
     }
 }
 
+void time_cb(const std_msgs::Float64ConstPtr &msg){
+    timestamp_current = msg->data;
+    // cout << "time : " << timestamp_current << endl;
+}
 
 int main(int argc, char **argv){
 
     ros::init(argc, argv, "localization");
     ros::NodeHandle nh;
 
+    ros::Subscriber sub_time = nh.subscribe<std_msgs::Float64>("/simulTime", 1, time_cb);
     ros::Subscriber sub_lidar = nh.subscribe("/scan", 1, lidar_cb);
     ros::Subscriber sub_red_ball = nh.subscribe("/red_position",1,red_ball_cb);
     ros::Subscriber sub_green_ball = nh.subscribe("/green_position",1,green_ball_cb);
 
-    ros::Publisher pub_cloud = nh.advertise<sensor_msgs::PointCloud2>("map/point_cloud/wall", 1);
-    ros::Publisher pub_obstacle_pcl = nh.advertise<sensor_msgs::PointCloud2>("map/point_cloud/obstacle", 1);
+    ros::Publisher pub_cloud = nh.advertise<sensor_msgs::PointCloud2>("/map/point_cloud/wall", 1);
+    ros::Publisher pub_obstacle_pcl = nh.advertise<sensor_msgs::PointCloud2>("/map/point_cloud/obstacle", 1);
 
     ros::Publisher pub_vel = nh.advertise<geometry_msgs::Twist>("/cmd_vel",1);
-    ros::Publisher pub_robot_geometry = nh.advertise<localization::robot_position>("map/data/robot",1);
-    ros::Publisher pub_obstacle_data = nh.advertise<localization::multi_position>("map/data/obstacle",1);
-    ros::Publisher pub_rb_data = nh.advertise<localization::multi_position>("map/data/red_ball",1);
-    ros::Publisher pub_gb_data = nh.advertise<localization::multi_position>("map/data/green_ball",1);
+    ros::Publisher pub_robot_geometry = nh.advertise<localization::robot_position>("/map/data/robot",1);
+    ros::Publisher pub_obstacle_data = nh.advertise<localization::multi_position>("/map/data/obstacle",1);
+    ros::Publisher pub_rb_data = nh.advertise<localization::multi_position>("/map/data/red_ball",1);
+    ros::Publisher pub_gb_data = nh.advertise<localization::multi_position>("/map/data/green_ball",1);
+
+    ros::Publisher pub_sys_cmd = nh.advertise<std_msgs::String>("/sys_cmd",1000);
 
     localization::robot_position msg_robot;
     
-
     init_vel();
 
     ros::Rate loop_rate(5);
@@ -665,6 +696,17 @@ int main(int argc, char **argv){
         if (mode != 4) {
             pub_vel.publish(vel_msg);
         }
+
+        std::stringstream ss;
+        std_msgs::String sys_msg;
+        if (mode == 4) {
+            ss << "autodriving";
+        }
+        else {
+            ss << "wait";
+        }
+        sys_msg.data = ss.str();
+        pub_sys_cmd.publish(sys_msg);
 
         loop_rate.sleep();
     }

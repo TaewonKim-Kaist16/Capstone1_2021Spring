@@ -45,8 +45,4 @@ add_executable(localization src/localization.cpp)
 add_dependencies(localization core_msgs_generate_messages_cpp)
 target_link_libraries(localization
   ${catkin_LIBRARIES}
-<<<<<<< HEAD
 )
-=======
-)
->>>>>>> 0c7167fe59a1f365e97b0eb787cb8ef87fee1fe9

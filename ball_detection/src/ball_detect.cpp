@@ -47,7 +47,7 @@ RNG rng(12345);
 
 int hough_GB_size_div_two = 3, hough_GB_size = 7;
 int hough_GB_10sigma = 15;
-int hough_min_dist = 40;
+int hough_min_dist = 45;
 int hough_min_rad = 1, hough_max_rad = 200;
 int hough_100dp = 150;
 const int max_hough_GB_10sigma = 30;
@@ -69,7 +69,7 @@ std::vector<float> pixel2point(Point center, float radius)
     Yc = (intrinsic_data[0] * fball_diameter) / (2 * radius);
     Xc = -u * Yc;
     Zc = -v * Yc;
-    X = intrinsic_data[2] - x;
+    X = x - intrinsic_data[2];
     Z = intrinsic_data[5] - y;
     a = radius * radius;
     b = (a + X * X + Z * Z + f * f) * fball_radius * fball_radius;
@@ -225,6 +225,7 @@ void ball_detect()
     Mat distCoeffs = Mat(1, 5, CV_32F, distortion_data);
     //undistort(image_distort, image, intrinsic, distCoeffs);
     image = image_distort;
+    flip(image, image, 1); // flip the image in horizontal direction
     //imshow("Distort", image_distort);
     //printf("x: %d y: %d\n", image.rows, image.cols);
 
@@ -384,7 +385,7 @@ void ball_detect()
             circle(circle_part, centers[i], radius[i], Scalar(255, 255, 255), FILLED);
             int contour_area = countNonZero(contour_part);
             int circle_area = countNonZero(circle_part);
-            if (circle_area * 0.8 < contour_area)
+            if (circle_area * 0.85 < contour_area)
             {
                 ++cnt;
                 circle(frame_combined, centers[i], (int)radius[i], Scalar(255, 0, 0), 2);
@@ -408,7 +409,11 @@ void ball_detect()
             int x = bound_rect[i].tl().x - bound_rect[i].height - 10;
             int y = bound_rect[i].tl().y - bound_rect[i].width - 10;
             copyMakeBorder(part.clone(), padded_part, bound_rect[i].width, bound_rect[i].width, bound_rect[i].height, bound_rect[i].height, BORDER_CONSTANT, 0);
-            if (bound_rect[i].height > 30)
+            if (bound_rect[i].height > 100)
+            {
+                GaussianBlur(padded_part, frame_gray_blur, Size(31, 31), 2.3, 2.3);
+            }
+            else if (bound_rect[i].height > 30)
             {
                 GaussianBlur(padded_part, frame_gray_blur, Size(31, 31), 2.0, 2.0);
             }
@@ -508,10 +513,10 @@ void imageCallback(const sensor_msgs::ImageConstPtr &msg)
 
 int main(int argc, char **argv)
 {
-    ros::init(argc, argv, "ball_detect_node");                                       //init ros nodd
-    ros::NodeHandle nh;                                                              //create node handler
-    image_transport::ImageTransport it(nh);                                          //create image transport and connect it to node hnalder
-    image_transport::Subscriber sub = it.subscribe("/kinect_rgb", 1, imageCallback); //create subscriber
+    ros::init(argc, argv, "ball_detect_node");                                           //init ros nodd
+    ros::NodeHandle nh;                                                                  //create node handler
+    image_transport::ImageTransport it(nh);                                              //create image transport and connect it to node hnalder
+    image_transport::Subscriber sub = it.subscribe("/kinect_rgb_top", 1, imageCallback); //create subscriber
 
     pub_red = nh.advertise<core_msgs::ball_position>("/red_position", 100); //setting publisher
     pub_green = nh.advertise<core_msgs::ball_position>("/green_position", 100);

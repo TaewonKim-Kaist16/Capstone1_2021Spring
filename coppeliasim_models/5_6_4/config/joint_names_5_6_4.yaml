@@ -1,0 +1,1 @@
+controller_joint_names: ['', 'Main2LFWheel', 'Main2LRWheel', 'Main2RFWheel', 'Main2RRWheel', 'Main2GripperMain', 'GripperMain2GripperArm', ]
