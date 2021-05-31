@@ -42,7 +42,7 @@ ros::Publisher pub_grip_arm;
 void ball_approach()
 {
     Mat image;
-    if (!image_distort.data)
+    if (!image_brg.data)
     {
         printf("No image data\n");
         return;
