@@ -124,15 +124,15 @@ This node is activated if the topic "/is_goal" which has type std_msgs::Bool is 
 
 When this node is activated, it assumes that the car is aligned with the green ball, and the car can go to the goal by just going straight.
 
-If this node is activated, it makes the gripper main position be 0.2(maximum).
+If this node is activated, it makes the gripper main position be 0.23.
 
 Next, it makes the car go straight until the top camera detect the closest green point has depth less than some threshold(green_distance_threshold).
 
-Then it makes the gripper arm position be 0.
+Then it makes the gripper arm position be -0.03.
 
 Next, it makes the car go back until the top camera detect the closest green point has depth larger than some threshold(green_distance_after).
 
-Then it makes the gripper main position be 0.
+Then it makes the gripper main position be 0 and arm position be 0.
 
 If it successfully scored, it publishes "/is_goal" with false to make this node disable, and also publishes "/goal_success" with true.
 
