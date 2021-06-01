@@ -40,8 +40,9 @@ catkin_package(
 ################################################################################
 # Install
 ################################################################################
+
 catkin_install_python(PROGRAMS
-  scripts/prismatic_teleop_key
+  scripts/obstacle_climb
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
@@ -52,6 +53,11 @@ catkin_install_python(PROGRAMS
 
 catkin_install_python(PROGRAMS
   scripts/wheel_teleop_cam
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+catkin_install_python(PROGRAMS
+  scripts/wheel_teleop_cam2
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
