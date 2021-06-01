@@ -1,3 +1,3 @@
 Header header
 int32 size
-float32[] dist
+int32[] dist

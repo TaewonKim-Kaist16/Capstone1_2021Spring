@@ -286,46 +286,55 @@ void line_distance()
         left_start = right_start;
         right_start = temp;
     }
-    for (i = 0; i < left_slopes.size(); ++i)
+    int tries;
+    for (tries = 0; tries < left_slopes.size(); ++tries)
     {
-        left_slope = slopes2angle(left_slopes[i]);
-        for (; j < right_slopes.size(); ++j)
+        j = 0;
+        for (i = tries; i < left_slopes.size(); ++i)
         {
-            right_slope = slopes2angle(right_slopes[j]);
-            if (left_slope + 7 > right_slope && left_slope - 7 < right_slope)
+            left_slope = slopes2angle(left_slopes[i]);
+            for (; j < right_slopes.size(); ++j)
             {
-                vectora.clear();
-                vectorb.clear();
-                normal_vector.clear();
-                for (k = 0; k < 3; ++k)
+                right_slope = slopes2angle(right_slopes[j]);
+                if (left_slope + 7 > right_slope && left_slope - 7 < right_slope)
                 {
-                    vectora.push_back((left_slopes[i][k] + right_slopes[j][k]) / 2);
-                    vectorb.push_back((left_start[i][k] - right_start[j][k]));
+                    vectora.clear();
+                    vectorb.clear();
+                    normal_vector.clear();
+                    for (k = 0; k < 3; ++k)
+                    {
+                        vectora.push_back((left_slopes[i][k] + right_slopes[j][k]) / 2);
+                        vectorb.push_back((left_start[i][k] - right_start[j][k]));
+                    }
+                    for (k = 0; k < 3; ++k)
+                    {
+                        normal_vector.push_back(vectora[(1 + k) % 3] * vectorb[(2 + k) % 3] - vectora[(2 + k) % 3] * vectorb[(1 + k) % 3]);
+                    }
+                    a = normal_vector[0];
+                    b = normal_vector[1];
+                    c = normal_vector[2];
+                    x0 = left_start[i][0];
+                    y0 = left_start[i][1];
+                    z0 = left_start[i][2];
+                    distance = (a * x0 + b * y0 + c * z0) / std::sqrt(a * a + b * b + c * c);
+                    if (distance < 0)
+                    {
+                        distance = -distance;
+                    }
+                    printf("Start: x: %f, y: %f, z: %f, d: %f\n", x0, y0, z0, std::sqrt(x0 * x0 + y0 * y0 + z0 * z0));
+                    printf("Distance: %f\n", distance);
+                    msg.distance.push_back(distance);
+                    msg.slope.push_back((left_slope + right_slope) / 2);
+                    distances.push_back(distance);
+                    final_slopes.push_back((left_slope + right_slope) / 2);
+                    ++j;
+                    break;
                 }
-                for (k = 0; k < 3; ++k)
-                {
-                    normal_vector.push_back(vectora[(1 + k) % 3] * vectorb[(2 + k) % 3] - vectora[(2 + k) % 3] * vectorb[(1 + k) % 3]);
-                }
-                a = normal_vector[0];
-                b = normal_vector[1];
-                c = normal_vector[2];
-                x0 = left_start[i][0];
-                y0 = left_start[i][1];
-                z0 = left_start[i][2];
-                distance = (a * x0 + b * y0 + c * z0) / std::sqrt(a * a + b * b + c * c);
-                if (distance < 0)
-                {
-                    distance = -distance;
-                }
-                printf("Start: x: %f, y: %f, z: %f, d: %f\n", x0, y0, z0, std::sqrt(x0 * x0 + y0 * y0 + z0 * z0));
-                printf("Distance: %f\n", distance);
-                msg.distance.push_back(distance);
-                msg.slope.push_back((left_slope + right_slope) / 2);
-                distances.push_back(distance);
-                final_slopes.push_back((left_slope + right_slope) / 2);
-                ++j;
-                break;
             }
+        }
+        if (!distances.empty())
+        {
+            break;
         }
     }
     msg.size = distances.size();

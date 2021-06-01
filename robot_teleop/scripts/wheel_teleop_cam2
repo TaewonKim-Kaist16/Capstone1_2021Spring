@@ -27,12 +27,14 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+from logging import shutdown
 import rospy
 import numpy
 
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float64 as joint_command
-from core_msgs.msg import dist_center
+from core_msgs.msg import dist_center 
+from core_msgs.msg import plane_info
 import sys, select, os
 if os.name == 'nt':
   import msvcrt
@@ -56,6 +58,8 @@ target_angular_vel  = 0.0
 
 last_linear_vel = 0.0
 last_angular_vel = 0.0
+
+shutdown_cnt = 0
 
 e = """
 Communications Failed
@@ -190,6 +194,21 @@ def checkAngularLimitVelocity(vel):
 
     return vel
 
+def shut_down(msg):
+    global shutdown_cnt
+    flag = 0
+    for i in range(msg.size):
+        if(msg.distance[i] < 0.067 and msg.slope[i] > -2.1 and msg.slope[i] < -1.1):
+            print("Slope: %f, Distance: %f\n", msg.slope[i], msg.distance[i])
+            flag = 1
+    if (flag == 1):
+        shutdown_cnt = shutdown_cnt + 1
+
+    else:
+        shutdown_cnt = 0
+
+    if (shutdown_cnt > 10):
+        rospy.signal_shutdown("End of Line_tracing")
 
 
 if __name__=="__main__":
@@ -202,10 +221,10 @@ if __name__=="__main__":
 
     pub_left_wheel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     pub_right_wheel = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    sub = rospy.Subscriber("/distance", dist_center, callback)
+    sub2 = rospy.Subscriber("/plane_info", plane_info, shut_down)
 
     while not rospy.is_shutdown():
-        sub = rospy.Subscriber("/distance", dist_center, callback)
-
         target_linear_vel = 4.7
         if len(centers)>0:
             control_vel(centers)

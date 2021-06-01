@@ -4,6 +4,7 @@
 #include <cv_bridge/cv_bridge.h>
 #include "core_msgs/ball_position.h"
 #include "core_msgs/dist_center.h"
+#include "core_msgs/plane_info.h"
 #include "opencv2/opencv.hpp"
 #include <visualization_msgs/Marker.h>
 #include <std_msgs/ColorRGBA.h>
@@ -13,11 +14,11 @@ using namespace std;
 
 Mat buffer;
 ros::Publisher pub;
-
+int shutdown_cnt = 0;
 
 void line_trace();
 void imageCallback(const sensor_msgs::ImageConstPtr& msg);
-
+void shut_down(core_msgs::plane_info msg);
 
 int main(int argc, char **argv)
 {
@@ -25,7 +26,7 @@ int main(int argc, char **argv)
    ros::NodeHandle nh; //create node handler
    image_transport::ImageTransport it(nh); //create image transport and connect it to node hnalder
    image_transport::Subscriber sub = it.subscribe("/kinect_rgb", 1, imageCallback); //create subscriber
-
+   ros::Subscriber sub2 = nh.subscribe("/plane_info", 100, shut_down);
    pub = nh.advertise<core_msgs::dist_center>("/distance", 100); //setting publisher
 
    ros::spin(); //spin.
@@ -58,7 +59,7 @@ void line_trace(){
         int leftend = 0;
         int rightend = 0;
         int center;
-        int point_on;
+        int point_on = 1;
         for (int j = 1; j < cols-1; j ++){
 
             if (buffer.at<Vec3b>(i, j) != Vec3b(0,0,0) && buffer.at<Vec3b>(i, j+1) == Vec3b(0,0,0))
@@ -74,7 +75,7 @@ void line_trace(){
         if ((leftend+rightend) != 0)
             center = (leftend+rightend)/2;
         else
-            center = rows/2;
+            center = cols/2;
             if ((leftend == 0) and (rightend == 0))
                 point_on = 0;
             else
@@ -83,7 +84,7 @@ void line_trace(){
             buffer.at<Vec3b>(i, center) = Vec3b(0,255, 0);
             buffer.at<Vec3b>(i+1, center) = Vec3b(0,255, 0);
         }
-        centers[i/(rows/16)]= center - rows/2;
+        centers[i/(rows/16)]= center - cols/2;
     }
 
     for (int i =0; i <rows; i++){
@@ -135,3 +136,25 @@ void imageCallback(const sensor_msgs::ImageConstPtr& msg)
    line_trace(); //proceed line_tracing
 }
 
+void shut_down(core_msgs::plane_info msg){
+    bool flag = 0;
+    int i;
+    for (i = 0; i < msg.size; ++i)
+    {
+        if(msg.distance[i] < 0.067 && msg.slope[i] > -2.1 && msg.slope[i] < -1.1)
+        {
+            printf("Slope: %f, Distance: %f\n", msg.slope[i], msg.distance[i]);
+            flag = 1;
+        }
+    }
+    if (flag == 1)
+    {
+        ++shutdown_cnt;
+    }
+    else
+    {
+        shutdown_cnt = 0;
+    }
+    if (shutdown_cnt > 10)
+        ros::shutdown();
+}
