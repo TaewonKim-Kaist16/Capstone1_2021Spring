@@ -130,6 +130,7 @@ void reset(localization::multi_position *d)
 void wobblefun()
 {
   rememberred(dummy2);
+  
 }
 
 void rememberred(localization::multi_position a)
@@ -1321,7 +1322,7 @@ int main(int argc, char **argv)
     //ros::Publisher pub_mode = nh.advertise<path_plan::mode>("path_plan/wheel_mode",1);
 
     ros::Publisher pub_motion = nh.advertise<autocontrol::motion>("motion",1);
-    
+
     autocontrol::motion motion_ex;
 
     red_balls_data.data.resize(6);
