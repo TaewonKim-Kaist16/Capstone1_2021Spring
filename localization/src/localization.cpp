@@ -246,7 +246,10 @@ void mode_1_rearrage(double th) {
     ang_error_dot = (ang_error - ang_error_pre) / dt;
     ang_error_tot = ang_error * dt + ang_error_tot;
 
-    if (abs(th-90) > 3) {
+    if (ang_error < -30) {
+        cout << "[warn] wrong wall detect" << endl;
+    }
+    else if (abs(th-90) > 3) {
 
         float ang_vel = kp*ang_error+kd*ang_error_dot+ki*ang_error_tot;
         if (ang_vel >= 0) { vel_msg.angular.z = min(ang_vel, (float)4); }
@@ -261,7 +264,6 @@ void mode_1_rearrage(double th) {
         cout << "ang vel : " << vel_msg.angular.z << endl;
 
     }
-
     else {
         if (timestamp_current- timestamp_start> 0.25) {
             mode = 2;
@@ -373,7 +375,7 @@ void mode_4_localizaiont() {
             for (int k=j+1;k<4;k++) {
                 geometry_msgs::Point p = get_crossing_point(coeffs[j],coeffs[k]);
                 float dist_from_robot = sqrt(pow(p.x,2)+pow(p.y,2));
-                if (dist_from_robot > 5) { continue; }
+                if (dist_from_robot > 10) { continue; }
 
                 float dist_from_old = sqrt(pow(p.x-old_ref.x,2)+pow(p.y-old_ref.y,2));
 
@@ -508,7 +510,7 @@ void lidar_cb(sensor_msgs::LaserScan msg){
     seg.setModelType (pcl::SACMODEL_LINE);
     seg.setMethodType (pcl::SAC_RANSAC);
     seg.setMaxIterations (100);
-    seg.setDistanceThreshold (0.03);
+    seg.setDistanceThreshold (0.01);
 
     for(int i = 0; i < 4; i++){
         pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_line (new pcl::PointCloud<pcl::PointXYZ> ());
