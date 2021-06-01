@@ -215,7 +215,6 @@ ros::Publisher pub_markers;
 
 void ball_detect()
 {
-    Mat image;
     if (!image_distort.data)
     {
         printf("No image data \n");
@@ -224,7 +223,8 @@ void ball_detect()
     Mat intrinsic = Mat(3, 3, CV_32F, intrinsic_data);
     Mat distCoeffs = Mat(1, 5, CV_32F, distortion_data);
     //undistort(image_distort, image, intrinsic, distCoeffs);
-    image = image_distort;
+    //image = image_distort;
+    Mat image(image_distort, Rect(0, 0, 640, 320));
     flip(image, image, 1); // flip the image in horizontal direction
     //imshow("Distort", image_distort);
     //printf("x: %d y: %d\n", image.rows, image.cols);
