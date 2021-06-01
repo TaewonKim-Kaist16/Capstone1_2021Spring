@@ -1,0 +1,3 @@
+<launch>
+    <node pkg = 'robot_teleop' type = 'obstacle_climb' name = 'obstacle_climb' respawn = 'false' />
+</launch>

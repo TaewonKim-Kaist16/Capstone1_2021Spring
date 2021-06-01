@@ -1,0 +1,6 @@
+<launch>
+    <include file = "$(find line_tracing)/launch/line_tracing.launch"/>
+    <include file = "$(find line_distance)/launch/line_distance.launch"/>
+    <include file = "$(find robot_teleop)/launch/obstacle_climb.launch"/>
+    <include file = "$(find robot_teleop)/launch/wheel_teleop_cam2.launch"/>
+</launch>

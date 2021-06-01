@@ -1,0 +1,3 @@
+<launch>
+    <node pkg = "robot_teleop" type = "wheel_teleop_cam2" name = "wheel_teleop_cam2" respawn = "false" />
+</launch>

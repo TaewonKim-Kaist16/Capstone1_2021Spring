@@ -1,0 +1,3 @@
+<launch>
+    <node pkg = 'line_tracing' type = 'line_tracing_node' name = 'line_tracing_node' output = 'screen' respawn = 'false' />
+</launch>

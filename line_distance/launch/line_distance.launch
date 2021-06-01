@@ -1,0 +1,3 @@
+<launch>
+    <node pkg = "line_distance" type = "line_distance_node" name = "line_distance_node" respawn = "false" />
+</launch>
