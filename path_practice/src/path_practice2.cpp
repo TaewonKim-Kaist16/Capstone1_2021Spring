@@ -33,6 +33,7 @@ int mode =1;
 std_msgs::String sys_cmd;
 bool task_done;
 int process_num=0;
+int sub_path_num=0;
 
 struct MIN_DIST {
   float dist;
@@ -40,7 +41,20 @@ struct MIN_DIST {
   float y;
 };
 
+struct OBJECT_INFOR
+{
+  vector<int> order;
+  vector<float> x_intercept;
+  vector<float> y_intercept;
+  vector<float> distance;
+  int size;
+  vector<geometry_msgs::Point> odometry;
+  
+};
+
 MIN_DIST red_min_dist;
+
+OBJECT_INFOR in_path_object_infor;
 
 //---------------declare functions ----------------------------------------
 void mode1_act();
@@ -52,19 +66,32 @@ void save_min_red()
     float diff_x = red_current.data[i].x-robot_data.x;
     float diff_y = red_current.data[i].y-robot_data.y;
     float dist = sqrt(pow(diff_x,2)+pow(diff_y,2));
-    if (red_min_dist.dist > dist) {
-      red_min_dist.x = red_current.data[i].x;
-      red_min_dist.y = red_current.data[i].y;
-      red_min_dist.dist = dist;
+    for(int i = 0; i<red_current.num; i++)
+    {
+      if(red_current.data[i].x !=50 && red_current.data[i].x !=100)
+      {
+        if (red_min_dist.dist > dist) {
+          red_min_dist.x = red_current.data[i].x;
+          red_min_dist.y = red_current.data[i].y;
+          red_min_dist.dist = dist;
+        }
+      }  
     }
+
   }
 }
 
-void detect_inline_object(float x, float y)
+vector<int> detect_inline_object(float x, float y)
 {
 
   inline_object.data.clear();
   inline_object.num = 0;
+  in_path_object_infor.order.clear();
+  in_path_object_infor.x_intercept.clear();
+  in_path_object_infor.y_intercept.clear();
+  in_path_object_infor.odometry.clear();
+  in_path_object_infor.size =0;
+  vector<int> line_inf(2,0);
 
   float m = (y-robot_data.y)/(x-robot_data.x);
 
@@ -79,6 +106,18 @@ void detect_inline_object(float x, float y)
     {
       inline_object.data.push_back(obstacle_data.data[i]);
       inline_object.num+=1;
+
+      in_path_object_infor.size += 1;
+      int size_recent = in_path_object_infor.size-1;
+      in_path_object_infor.odometry.resize(size_recent);
+      in_path_object_infor.order.resize(size_recent);
+      in_path_object_infor.x_intercept.resize(size_recent);
+      in_path_object_infor.y_intercept.resize(size_recent);
+      in_path_object_infor.odometry.push_back(obstacle_data.data[i]);
+      in_path_object_infor.x_intercept.push_back(obstacle_data.data[i].x);
+      in_path_object_infor.y_intercept.push_back(obstacle_data.data[i].y);
+      in_path_object_infor.order.push_back(size_recent);
+      cout <<"object order size " <<in_path_object_infor.order.size()<<" size"<<in_path_object_infor.size<<endl;
     }
   }
 
@@ -89,6 +128,17 @@ void detect_inline_object(float x, float y)
     {
       inline_object.data.push_back(red_current.data[i]);
       inline_object.num+=1;
+
+      in_path_object_infor.size += 1;
+      int size_recent = in_path_object_infor.size-1;
+      in_path_object_infor.odometry.resize(size_recent);
+      in_path_object_infor.order.resize(size_recent);
+      in_path_object_infor.x_intercept.resize(size_recent);
+      in_path_object_infor.y_intercept.resize(size_recent);
+      in_path_object_infor.odometry.push_back(red_current.data[i]);
+      in_path_object_infor.x_intercept.push_back(red_current.data[i].x);
+      in_path_object_infor.y_intercept.push_back(red_current.data[i].y);
+      in_path_object_infor.order.push_back(size_recent);
     }
   }
 
@@ -96,9 +146,44 @@ void detect_inline_object(float x, float y)
   {
     cout<<"the inline object :"<<i<<" th : "<<inline_object.data[i].x<<"   "<<inline_object.data[i].y<<endl;
   }
-
+  line_inf[0]=m;
+  line_inf[1]=b;
+  for (int i=0; i<in_path_object_infor.size; i++)
+  {
+    cout<<"in path structure : "<< in_path_object_infor.odometry[i].x<<endl;
+  }
+  cout <<"size of x_inteception number"<<in_path_object_infor.x_intercept.size()<<endl;
+  cout <<"return the line value"<<endl;
+  return line_inf;
 }
 
+void calculate_object_distance()
+{
+  float x_diff;
+  float y_diff;
+  in_path_object_infor.distance.clear();
+  in_path_object_infor.distance.resize(in_path_object_infor.size);
+  for (int i = 0; i<in_path_object_infor.size; i++)
+  {
+    x_diff = in_path_object_infor.x_intercept[i] - robot_data.x;
+    y_diff = in_path_object_infor.y_intercept[i] - robot_data.y;
+    in_path_object_infor.distance[i] = sqrt(pow(x_diff,2)+pow(y_diff,2));
+  } 
+}
+
+void calculate_intercept(float *m, float* b)
+{
+  float tilt = *m;
+  float origin_b = *b;
+  cout << "inpath object infor.order size  "<<in_path_object_infor.order.size()<<endl;
+  cout << "inpath object infor.size : "<<in_path_object_infor.size<<endl;
+  
+  for(int i = 0; i<in_path_object_infor.size; i++)
+  {//calculate interception point on line
+    in_path_object_infor.x_intercept[i] = (in_path_object_infor.odometry[i].x+tilt*in_path_object_infor.odometry[i].y-origin_b)/(tilt*tilt+1);
+    in_path_object_infor.y_intercept[i] = tilt*in_path_object_infor.x_intercept[i] + origin_b;
+  }
+}
 
 // void update()
 // {
@@ -232,7 +317,38 @@ void detect_inline_object(float x, float y)
 //   *normal = old;
 //   return count;
 // }
+void rearrange_inpath_object(float m, float b)
+{
+  float tilt = m;
+  float translate = b;
+  cout << "before calculating interception"<<endl;
+  calculate_intercept(& tilt, & translate);
+  cout <<" end intercetion calculation and ready to calculate object distance"<<endl;
+  calculate_object_distance();
+  cout << " calculate the object distance well"<<endl;
+  geometry_msgs::Point swaping_dummy;
+  float dummy_interception;
 
+  for (int i=0; i<in_path_object_infor.size-1; i++)
+  {
+    for (int j=i+1; j<in_path_object_infor.size; j++)
+    {
+      if (in_path_object_infor.distance[i] > in_path_object_infor.distance[j])
+      {
+        swaping_dummy = in_path_object_infor.odometry[i];
+        in_path_object_infor.odometry[i] = in_path_object_infor.odometry[j];
+        in_path_object_infor.odometry[j] = swaping_dummy;
+
+        dummy_interception = in_path_object_infor.x_intercept[i];
+        in_path_object_infor.x_intercept[i] = in_path_object_infor.x_intercept[j];
+        in_path_object_infor.x_intercept[j] = dummy_interception;
+        dummy_interception = in_path_object_infor.y_intercept[i];
+        in_path_object_infor.y_intercept[i] = in_path_object_infor.y_intercept[j];
+        in_path_object_infor.y_intercept[j] = dummy_interception;
+      }
+    }
+  }
+}
 
 void rotation(float x, float y)
 {
@@ -254,7 +370,7 @@ void wobble(float angle)
   motion.angle = angle;
 
   save_min_red();
-  cout << "min red ball : "  << red_min_dist.x << " " << red_min_dist.y << "  dist : " << red_min_dist.dist << endl;
+  //cout << "min red ball : "  << red_min_dist.x << " " << red_min_dist.y << "  dist : " << red_min_dist.dist << endl;
   pub_motion.publish(motion);
   // for (int i = 0; i<red_store.num; i++)
   // {
@@ -263,7 +379,10 @@ void wobble(float angle)
   // }
 }
 
-
+void calculate_sub_path()
+{
+  
+}
 
 
 void mode1_act()
@@ -272,7 +391,7 @@ void mode1_act()
   if(process_num ==0)
   { 
 
-    rotation(1.5,2.5);
+    rotation(1,2.5);
 
     if (task_done == true)
     {
@@ -282,7 +401,7 @@ void mode1_act()
   }
   else if (process_num ==1)
   {
-    wobble(45);
+    wobble(25);
     // update();
     cout << "process " << 2 <<" started" << endl;
 
@@ -309,16 +428,32 @@ void mode1_act()
   }
   else if (process_num == 3)
   {
-    
+
     rotation(1.5,5);
     float x=1.5;
     float y= 5;
     if (task_done == true)
-    {
-      detect_inline_object(x,y);
+    { vector<int> line_information;
+      line_information = detect_inline_object(x,y);
+      cout <<"return well and wati the reaarange fucntion"<<endl;
+      rearrange_inpath_object(line_information[0],line_information[1]);
+      cout<<"rearrange is well doned"<<endl;
+      for (int i =0; i<5; i++)
+      {
+        for(int j =0; j< in_path_object_infor.size; j++){
+          cout << "in_line object : (shortest order)"<<in_path_object_infor.odometry[j].x<<" "<<in_path_object_infor.odometry[j].y<<endl;
+        }
+      }
       process_num=4;
       task_done =false;
     }
+  }
+  else if (process_num ==4){
+    calculate_sub_path();
+    
+
+
+
   }
 }
 
@@ -424,6 +559,12 @@ int main(int argc, char **argv)
 
   red_min_dist.dist = 1000;
 
+  in_path_object_infor.order.clear();
+  in_path_object_infor.x_intercept.clear();
+  in_path_object_infor.y_intercept.clear();
+  in_path_object_infor.odometry.clear();
+  in_path_object_infor.size = 0;
+
   while(ros::ok())
   {
     if(sys_cmd.data != "wait" && sys_cmd.data != "")
@@ -434,5 +575,6 @@ int main(int argc, char **argv)
 
     ros::spinOnce();
   }
+  cout<< "while loop escaped"<<endl;
   return 0;
 }
