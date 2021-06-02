@@ -49,7 +49,8 @@ struct OBJECT_INFOR
   vector<float> distance;
   int size;
   vector<geometry_msgs::Point> odometry;
-  
+  vector<int> direction;
+
 };
 
 MIN_DIST red_min_dist;
@@ -75,9 +76,34 @@ void save_min_red()
           red_min_dist.y = red_current.data[i].y;
           red_min_dist.dist = dist;
         }
-      }  
+      }
     }
 
+  }
+}
+
+void decide_left_right(float *goal_x, float *goal_y)
+{
+  float x_diff = *goal_x-robot_data.x;
+  float y_diff = *goal_y - robot_data.y;
+
+  float curl;
+  for (int i =0; i<in_path_object_infor.size; i++)
+  {
+    float x_diff_ref = in_path_object_infor.odometry[i].x - robot_data.x;
+    float y_diff_ref = in_path_object_infor.odometry[i].y - robot_data.y;
+
+    curl = x_diff * y_diff_ref - y_diff * x_diff_ref;
+    if (curl > 0 ) // left of robot
+    {
+      in_path_object_infor.direction[i] = 1;
+    }
+    else if (curl == 0){ // on the line
+      in_path_object_infor.direction[i] = 3;
+    }
+    else { // left of robot
+      in_path_object_infor.direction[i] = 2;
+    }
   }
 }
 
@@ -119,6 +145,7 @@ vector<int> detect_inline_object(float x, float y)
       in_path_object_infor.order.push_back(size_recent);
       cout <<"object order size " <<in_path_object_infor.order.size()<<" size"<<in_path_object_infor.size<<endl;
     }
+
   }
 
   for (int i = 0; i<red_current.num; i++)
@@ -140,20 +167,22 @@ vector<int> detect_inline_object(float x, float y)
       in_path_object_infor.y_intercept.push_back(red_current.data[i].y);
       in_path_object_infor.order.push_back(size_recent);
     }
-  }
 
-  for (int i =0; i<inline_object.num; i++)
-  {
-    cout<<"the inline object :"<<i<<" th : "<<inline_object.data[i].x<<"   "<<inline_object.data[i].y<<endl;
   }
+  in_path_object_infor.direction.clear();
+  in_path_object_infor.direction.resize(in_path_object_infor.size);
+  // for (int i =0; i<inline_object.num; i++)
+  // {
+  //   cout<<"the inline object :"<<i<<" th : "<<inline_object.data[i].x<<"   "<<inline_object.data[i].y<<endl;
+  // }
   line_inf[0]=m;
   line_inf[1]=b;
-  for (int i=0; i<in_path_object_infor.size; i++)
-  {
-    cout<<"in path structure : "<< in_path_object_infor.odometry[i].x<<endl;
-  }
-  cout <<"size of x_inteception number"<<in_path_object_infor.x_intercept.size()<<endl;
-  cout <<"return the line value"<<endl;
+  // for (int i=0; i<in_path_object_infor.size; i++)
+  // {
+  //   cout<<"in path structure : "<< in_path_object_infor.odometry[i].x<<endl;
+  // }
+  // cout <<"size of x_inteception number"<<in_path_object_infor.x_intercept.size()<<endl;
+  // cout <<"return the line value"<<endl;
   return line_inf;
 }
 
@@ -168,7 +197,7 @@ void calculate_object_distance()
     x_diff = in_path_object_infor.x_intercept[i] - robot_data.x;
     y_diff = in_path_object_infor.y_intercept[i] - robot_data.y;
     in_path_object_infor.distance[i] = sqrt(pow(x_diff,2)+pow(y_diff,2));
-  } 
+  }
 }
 
 void calculate_intercept(float *m, float* b)
@@ -177,7 +206,7 @@ void calculate_intercept(float *m, float* b)
   float origin_b = *b;
   cout << "inpath object infor.order size  "<<in_path_object_infor.order.size()<<endl;
   cout << "inpath object infor.size : "<<in_path_object_infor.size<<endl;
-  
+
   for(int i = 0; i<in_path_object_infor.size; i++)
   {//calculate interception point on line
     in_path_object_infor.x_intercept[i] = (in_path_object_infor.odometry[i].x+tilt*in_path_object_infor.odometry[i].y-origin_b)/(tilt*tilt+1);
@@ -185,138 +214,7 @@ void calculate_intercept(float *m, float* b)
   }
 }
 
-// void update()
-// {
-//   int size;
-//   vector<int> index_store;
-//
-//   for (int i=0; i<red_current.num; i++)
-//   {
-//     for(int j=0; j<red_store.num; j++)
-//     {
-//       if((red_current.data[i].x-red_store.data[i].x)<0.1 && (red_current.data[i].y-red_store.data[i].y)<0.1 )
-//       {
-//         continue;
-//         red_store.data[i].x
-//       }
-//     }
-//     if(red_current.data[i].x != 50 || red_current.data[i].x != 100)
-//     {
-//       red_store.data.push_back(red_current.data[i]);
-//       size = red_store.data.size();
-//       red_store.num = size;
-//     }
-//   }
-//   cout<<"red_balls num : "<<red_store.num<<endl;
-//   for(int i=0; i<red_store.num; i++)
-//   {
-//     cout<<"red ball "<<i<<"th : "<<red_store.data[i].x<<"  "<<red_store.data[i].y<<endl;
-//   }
-// }
-// int updating(localization::multi_position *recentone,localization::multi_position *oldone)
-// {
-//   geometry_msgs::Point p;
-//   int a=0;
-//   int rem=0;
-//
-//   //green_ball same data exist
-//   bool b=false;
-//
-//   int c=0;
-//   int d=0;
-//   int count=0;
-//   localization::multi_position rec=*recentone;
-//   localization::multi_position old=*oldone;
-//   localization::multi_position new1;
-//   new1.data.clear();
-//   new1.num=old.num-1;
-//   rearrange(&rec);
-//
-//   //green ball detect confirm mode
-//   if(green_detect==true)
-//   {
-//     for (int i=0; i<old.num; i++)
-//     {
-//       p.x=abs(green_ball_data.data[i].x-rec.data[i].x);
-//       p.y=abs(green_ball_data.data[i].y-rec.data[i].y);
-//       //if green ball does not exist at final position
-//       if ((p.x<0.2 && p.y<0.2) && (old.num-1 !=i))
-//       {
-//         //have to change order
-//         b=true;
-//         //remember the index
-//         rem=i;
-//         c=1;
-//       }
-//       //for dummy data which filled at no real data exist
-//       if (rec.data[i].x==50 || rec.data[i].x==100)
-//       {
-//         //count the number
-//         d+=1;
-//       }
-//     }
-//   }
-//   //green ball reach its proper position
-//   if(b==true)
-//   {
-//     p=rec.data[old.num-1];
-//     rec.data[rem]=rec.data[old.num-1];
-//     rec.data[old.num-1]=p;
-//
-//     // rearrange the order except dummy value
-//     for(int j=rem; j<old.num-d-2; j++)
-//     {
-//       change_order(&rec.data[j],&rec.data[j+1]);
-//     }
-//   }
-//   //up to now, green ball on the last position
-//
-//   //update the data
-//   for(int i=0; i<rec.num-c; i++)
-//   {
-//     for(int j=0; j<new1.num; j++)
-//     {
-//       p.x=abs(old.data[j].x-rec.data[i].x);
-//       p.y=abs(old.data[j].y-rec.data[i].y);
-//
-//       //if data same, update with recent data
-//       if(p.x<0.2 && p.y<0.2)
-//       {
-//           new1.data.push_back(rec.data[i]);
-//
-//         //initalize
-//         rec.data[i].x=0;
-//         rec.data[i].y=0;
-//         count+=1;
-//       }
-//     }
-//   }
-//   //fill other recent value
-//   for(int i=0; i<rec.num-c; i++)
-//   {
-//     if((rec.data[i].x !=0) || (rec.data[i].x != 50) || (rec.data[i].x != 100))
-//     {
-//       new1.data.push_back(rec.data[i]);
-//       count+=1;
-//     }
-//   }
-//
-//   rearrange(&new1);
-//   new1.num=old.num;
-//   new1.data.resize(old.num);
-//
-//   geometry_msgs::Point u;
-//   u.x=1000; u.y=1000;
-//
-//   for (int i=count; i<old.num; i++)
-//   {
-//     new1.data.push_back(p);
-//     new1.data.push_back(p);
-//   }
-//
-//   *normal = old;
-//   return count;
-// }
+
 void rearrange_inpath_object(float m, float b)
 {
   float tilt = m;
@@ -347,6 +245,17 @@ void rearrange_inpath_object(float m, float b)
         in_path_object_infor.y_intercept[j] = dummy_interception;
       }
     }
+  }
+}
+
+void sub_path_destination()
+{
+  int index = 1 // delete the grabbed ball
+  while (index+1 <= in_path_object_infor.size)
+  {
+    int diff = in_path_object_infor.size;
+    float first;
+    float second;
   }
 }
 
@@ -381,15 +290,15 @@ void wobble(float angle)
 
 void calculate_sub_path()
 {
-  
+
 }
 
 
 void mode1_act()
 {
-  
+
   if(process_num ==0)
-  { 
+  {
 
     rotation(1,2.5);
 
@@ -435,9 +344,11 @@ void mode1_act()
     if (task_done == true)
     { vector<int> line_information;
       line_information = detect_inline_object(x,y);
-      cout <<"return well and wati the reaarange fucntion"<<endl;
+      cout <<"return well and wait the reaarange fucntion"<<endl;
       rearrange_inpath_object(line_information[0],line_information[1]);
       cout<<"rearrange is well doned"<<endl;
+      cout<<"left or right decision start"<<endl;
+      decide_left_right(&x, &y);
       for (int i =0; i<5; i++)
       {
         for(int j =0; j< in_path_object_infor.size; j++){
@@ -450,7 +361,7 @@ void mode1_act()
   }
   else if (process_num ==4){
     calculate_sub_path();
-    
+
 
 
 
@@ -564,6 +475,7 @@ int main(int argc, char **argv)
   in_path_object_infor.y_intercept.clear();
   in_path_object_infor.odometry.clear();
   in_path_object_infor.size = 0;
+  in_path_object_infor.direction.clear();
 
   while(ros::ok())
   {
