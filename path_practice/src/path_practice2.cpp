@@ -25,7 +25,7 @@ localization::multi_position red_current;
 localization::multi_position green_current;
 localization::robot_position robot_data;
 localization::multi_position inline_object;
-
+localization::multi_position sub_path_des;
 ros::Publisher pub_motion;
 
 
@@ -105,6 +105,16 @@ void decide_left_right(float *goal_x, float *goal_y)
       in_path_object_infor.direction[i] = 2;
     }
   }
+}
+
+float calculate_between_length(geometry_msgs::Point *first, geometry_msgs::Point *second)
+{
+  geometry_msgs::Point a = *first;
+  geometry_msgs::Point b = *second;
+
+  float result = sqrt(pow((a.x-b.x),2)+pow((a.y-b.y),2));
+  
+  return result;
 }
 
 vector<int> detect_inline_object(float x, float y)
@@ -247,15 +257,77 @@ void rearrange_inpath_object(float m, float b)
     }
   }
 }
+float calculate_vertical_distance(geometry_msgs::Point *point , int *order) 
+{
+  geometry_msgs::Point a = *point;
+  int call_number = *order;
+  float x_diff = a.x-in_path_object_infor.x_intercept[call_number];
+  float y_diff = a.y-in_path_object_infor.y_intercept[call_number];
+  x_diff = sqrt(pow(x_diff, 2)+ pow(y_diff,2));
+  return x_diff;  
+}
+
+geometry_msgs::Point opposite_position( geometry_msgs::Point *odometry, float *vertical_length)
+{
+  geometry_msgs::Point revise_point =*odometry;
+  float norm = *vertical_length;
+
+  return revise_point;
+}
+
+
 
 void sub_path_destination()
 {
-  int index = 1 // delete the grabbed ball
+
+  sub_path_des.data.resize(in_path_object_infor.size-1);
+  sub_path_des.num = in_path_object_infor.size-1;
+  sub_path_des.data.clear();
+
+
+  int index = 1; // delete the grabbed ball
   while (index+1 <= in_path_object_infor.size)
   {
     int diff = in_path_object_infor.size;
-    float first;
-    float second;
+    float first = index;
+    float second = index+1;
+    float vertical_length1 = calculate_vertical_distance(&in_path_object_infor.odometry[first], &in_path_object_infor.order[first]);
+    if (second <= in_path_object_infor.size){
+      float result = calculate_between_length(&in_path_object_infor.odometry[first], &in_path_object_infor.odometry[second]);
+ 
+      float vertical_length2 = calculate_vertical_distance(&in_path_object_infor.odometry[second], &in_path_object_infor.order[first]);
+      if (in_path_object_infor.direction[first] == in_path_object_infor.direction[second])
+      {
+        if(vertical_length1 > vertical_length2)
+        {
+          sub_path_des.data[index-1] = opposite_position(&in_path_object_infor.odometry[first], & vertical_length1);
+        }
+        else { sub_path_des.data[index-1] = opposite_position(&in_path_object_infor.odometry[second], & vertical_length2);}
+        index+=2;
+      }
+
+      else if ((vertical_length1 * vertical_length2) !=0)
+      {
+        if (result > 0.4)
+        {
+
+        }
+        else
+        {
+
+        }
+      }
+      else
+      {
+
+      }
+
+    }
+
+    else{
+      sub_path_des.data[first] = opposite_position(&in_path_object_infor.odometry[first], & vertical_length1);
+    }
+
   }
 }
 
