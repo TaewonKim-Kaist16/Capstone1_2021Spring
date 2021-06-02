@@ -82,7 +82,7 @@ float convert_ang(float angle, int option, bool use_radian=false) {
 }
 
 
-void arrange_angle(float x, float y) {
+void arrange_angle(float x, float y,float compensator=1) {
 
     float kp=4,kd=0.002,ki=0;
     ang_error_pre = ang_error;
@@ -112,6 +112,10 @@ void arrange_angle(float x, float y) {
     float ang_vel = kp*ang_error+kd*ang_error_dot+ki*ang_error_tot;
     if (ang_vel >= 0) { vel_msg.angular.z = min(ang_vel, (float)4); }
     else { vel_msg.angular.z = max(ang_vel, (float)-4); }
+
+    if (ball_approach_sucess == true) {
+        vel_msg.angular.z = vel_msg.angular.z*compensator;
+    }
 
     timestamp_start = timestamp_current;
 
@@ -351,7 +355,7 @@ void harvesting(){
         }
         else if (process_num == 1) {
             go_forward(harvesting_p1.x, harvesting_p1.y);
-            if (dist_error < 0.04  || dist_error > driving_min_dist + 0.07) {
+            if (dist_error < 0.07  || dist_error > driving_min_dist + 0.07) {
                 ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
                 process_num = 2;
             }
@@ -361,7 +365,14 @@ void harvesting(){
                 }
             }
         }
-        else if (process_num == 2) {
+        else if (process_num  == 2) {
+            arrange_angle(motion.x,motion.y);
+            if (abs(ang_error) < 3*M_PI/180 && abs(ang_error - ang_error_pre) < 2*M_PI/180 ) {
+                ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
+                process_num = 3;
+            }
+        }
+        else if (process_num == 3) {
             float min_dist = 1000;
             x = motion.x;
             y = motion.y;
@@ -378,7 +389,7 @@ void harvesting(){
             cout << "error : " << ang_error << " diff : " << abs(ang_error - ang_error_pre) << endl;
             if (abs(ang_error) < 0.5*M_PI/180 && abs(ang_error - ang_error_pre) < 1*M_PI/180 ) {
                 ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
-                process_num = 3;
+                process_num = 4;
                 is_align = true;
             }
         }
@@ -409,7 +420,7 @@ void scoring() {
     if (flag_motion_cb == true) {
         cout << "process num : " << process_num << endl;
         if (process_num == 0) {
-            arrange_angle(1.5, 4.3);
+            arrange_angle(1.5, 4.3,5);
             cout << "error : " << ang_error << " diff : " << abs(ang_error - ang_error_pre) << endl;
             if (abs(ang_error) < 2*M_PI/180 && abs(ang_error - ang_error_pre) < 1*M_PI/180 ) {
                 ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
@@ -428,7 +439,7 @@ void scoring() {
             }
         }
         else if (process_num == 2) {
-            arrange_angle(1.5,5);
+            arrange_angle(1.5,5,1);
             if (abs(ang_error) < 2*M_PI/180 && abs(ang_error - ang_error_pre) < 2*M_PI/180 ) {
                 ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
                 process_num = 3;
