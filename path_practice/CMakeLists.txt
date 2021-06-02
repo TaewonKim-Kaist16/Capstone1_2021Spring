@@ -39,9 +39,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
   #include
 )
-add_executable(path_practice src/path_practice.cpp)
-add_dependencies(path_practice core_msgs_generate_messages_cpp)
+add_executable(path_practice2 src/path_practice2.cpp)
+add_dependencies(path_practice2 core_msgs_generate_messages_cpp)
 
-target_link_libraries(path_practice
+target_link_libraries(path_practice2
   ${catkin_LIBRARIES} ${OpenCV_LIBS} ${cv_bridge_LIBRARIES}
 )

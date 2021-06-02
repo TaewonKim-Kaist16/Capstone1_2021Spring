@@ -28,7 +28,7 @@ int low_H = 0, low_S = 72, low_V = 52;
 int high_H = max_value_H, high_S = max_value, high_V = max_value;
 int low_H_red1 = 0, low_H_red2 = 120, low_H_green = 53;
 int high_H_red1 = 11, high_H_red2 = max_value_H, high_H_green = 80;
-int red_cnt_threshold = 145000;
+int red_cnt_threshold = 120000;
 int slow_threshold = 110000;
 bool is_align = true;
 
@@ -170,7 +170,7 @@ void alignCallback(const std_msgs::BoolConstPtr &msg)
 void timeCallback(const std_msgs::Float64ConstPtr &msg)
 {
     curr_time = msg->data;
-    if (is_align && curr_time > 4 + start_time)
+    if (is_align && curr_time > 5 + start_time)
     {
         printf("approach_failed! try again.\n");
         geometry_msgs::Twist vel_msg;

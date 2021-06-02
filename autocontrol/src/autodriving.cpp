@@ -48,7 +48,7 @@ ros::Publisher pub_is_goal;
 ros::Publisher pub_motion_done;
 
 float convert_ang(float angle, int option, bool use_radian=false) {
-    /*  
+    /*
         Convert angle into range 0~359
         option 1 Input : >:-90, ^:0, <:90, v:180(-180)
         option 2 Input : >:0, ^:90, <:180(-180), v:-90
@@ -90,7 +90,7 @@ void arrange_angle(float x, float y) {
     float x_diff = x - robot_geometry.pose.x;
     float y_diff = y - robot_geometry.pose.y;
     float angle = atan2(y_diff,x_diff);
-    
+
     float rob_ang = convert_ang(robot_geometry.angle,1,true);
     float direction = convert_ang(angle,2,true);
 
@@ -112,7 +112,7 @@ void arrange_angle(float x, float y) {
     float ang_vel = kp*ang_error+kd*ang_error_dot+ki*ang_error_tot;
     if (ang_vel >= 0) { vel_msg.angular.z = min(ang_vel, (float)4); }
     else { vel_msg.angular.z = max(ang_vel, (float)-4); }
-    
+
     timestamp_start = timestamp_current;
 
     cout << "dt : " << dt << endl;
@@ -128,13 +128,13 @@ void go_forward(float x, float y,float max_lin=4.0,float max_ang=1.5) {
     float kp=3,kd=0.02,ki=0.05;
     float kp_ang=2,kd_ang=0.005,ki_ang=0.05;
     dist_error_pre = dist_error;
-    
+
 
     float x_diff = x - robot_geometry.pose.x;
     float y_diff = y - robot_geometry.pose.y;
     float distance = sqrt(pow(x_diff,2)+pow(y_diff,2));
     float angle = atan2(y_diff,x_diff);
-    
+
     float rob_ang = convert_ang(robot_geometry.angle,1,true);
     float direction = convert_ang(angle,2,true);
 
@@ -183,7 +183,7 @@ void cal_wobbling_range() {
     float rob_ang = convert_ang(robot_geometry.angle,1,true);
     wobble_ref.x = robot_geometry.pose.x + 2*cos(rob_ang*M_PI/180);
     wobble_ref.y = robot_geometry.pose.y + 2*sin(rob_ang*M_PI/180);
-    
+
     float th1 = (rob_ang + motion.angle) * M_PI / 180;
     wobble_p1.x = robot_geometry.pose.x + 2*cos(th1);
     wobble_p1.y = robot_geometry.pose.y + 2*sin(th1);
@@ -199,7 +199,7 @@ void cal_wobbling_range() {
 
 
 void cal_harvesting_point() {
-    float margin = 0.4;
+    float margin = 0.35;
 
     float x_diff = motion.x - robot_geometry.pose.x;
     float y_diff = motion.y - robot_geometry.pose.y;
@@ -282,7 +282,7 @@ void rotation() {
         vel_msg.linear.x = 0;
         vel_msg.angular.z = 0;
         process_num = 0;
-    }        
+    }
 }
 
 
@@ -301,7 +301,7 @@ void wobbling() {
             if (abs(ang_error) < 4*M_PI/180 && abs(ang_error - ang_error_pre) < 3*M_PI/180 ) {
                 ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
                 process_num = 2;
-            }            
+            }
         }
         else if (process_num == 2) {
             arrange_angle(wobble_ref.x,wobble_ref.y);
@@ -313,11 +313,11 @@ void wobbling() {
         else {
             flag_motion_cb = false;
             dist_error=0, dist_error_pre=0, dist_error_dot=0, dist_error_tot=0;
-            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;    
+            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
 
             std_msgs::Bool motion_done_pub;
             motion_done_pub.data = true;
-            pub_motion_done.publish(motion_done_pub);      
+            pub_motion_done.publish(motion_done_pub);
         }
 
     }
@@ -337,7 +337,7 @@ void harvesting(){
 
         if (process_num == 0) {
             float dist = sqrt(pow(motion.x-robot_geometry.pose.x,2)+pow(motion.y-robot_geometry.pose.y,2));
-            if (dist < 0.04) {
+            if (dist < 0.4) {
                 process_num = 2;
             }
             else {
@@ -359,10 +359,12 @@ void harvesting(){
                 if (dist_error < driving_min_dist) {
                     driving_min_dist = dist_error;
                 }
-            }            
+            }
         }
         else if (process_num == 2) {
             float min_dist = 1000;
+            x = motion.x;
+            y = motion.y;
             for (int i=0; i<red_balls_data.num; i++) {
                 float dist = sqrt(pow(red_balls_data.data[i].x-robot_geometry.pose.x,2)+pow(red_balls_data.data[i].y-robot_geometry.pose.y,2));
                 if (dist < min_dist) {
@@ -385,17 +387,17 @@ void harvesting(){
             is_align_pub.data = true;
             pub_is_align.publish(is_align_pub);
 
-            flag_motion_cb = false;
             dist_error=0, dist_error_pre=0, dist_error_dot=0, dist_error_tot=0;
-            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;       
+            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
             driving_min_dist = 1000;
 
             std_msgs::Bool motion_done_pub;
             motion_done_pub.data = true;
             pub_motion_done.publish(motion_done_pub);
-        } 
+        }
     }
     else {
+        flag_motion_cb = false;
         vel_msg.linear.x = 0;
         vel_msg.angular.z = 0;
         process_num = 0;
@@ -442,7 +444,7 @@ void scoring() {
             ball_approach_sucess = false;
 
             dist_error=0, dist_error_pre=0, dist_error_dot=0, dist_error_tot=0;
-            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;               
+            ang_error=0, ang_error_pre=0, ang_error_dot=0, ang_error_tot=0;
             driving_min_dist = 1000;
 
             std_msgs::Bool motion_done_pub;
@@ -535,6 +537,7 @@ void sys_cb(std_msgs::String msg) {
 
 
 void motion_cb(autocontrol::motion msg) {
+  if (flag_motion_cb == false) {
     flag_motion_cb = true;
     process_num = 0;
     motion.x = msg.x;
@@ -551,6 +554,7 @@ void motion_cb(autocontrol::motion msg) {
     else if (motion.msg == "harvesting") {
         cal_harvesting_point();
     }
+  }
 
 }
 
