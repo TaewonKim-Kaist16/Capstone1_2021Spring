@@ -32,6 +32,7 @@ ros::Publisher pub_motion;
 int mode =1;
 std_msgs::String sys_cmd;
 bool task_done;
+int driving_count;
 int process_num=0;
 int sub_path_num=0;
 
@@ -78,7 +79,6 @@ void save_min_red()
         }
       }
     }
-
   }
 }
 
@@ -113,7 +113,7 @@ float calculate_between_length(geometry_msgs::Point *first, geometry_msgs::Point
   geometry_msgs::Point b = *second;
 
   float result = sqrt(pow((a.x-b.x),2)+pow((a.y-b.y),2));
-  
+
   return result;
 }
 
@@ -257,78 +257,143 @@ void rearrange_inpath_object(float m, float b)
     }
   }
 }
-float calculate_vertical_distance(geometry_msgs::Point *point , int *order) 
+
+float calculate_vertical_distance(geometry_msgs::Point *point , int *order)
 {
   geometry_msgs::Point a = *point;
   int call_number = *order;
   float x_diff = a.x-in_path_object_infor.x_intercept[call_number];
   float y_diff = a.y-in_path_object_infor.y_intercept[call_number];
   x_diff = sqrt(pow(x_diff, 2)+ pow(y_diff,2));
-  return x_diff;  
+  return x_diff;
 }
 
-geometry_msgs::Point opposite_position( geometry_msgs::Point *odometry, float *vertical_length)
+geometry_msgs::Point opposite_position( geometry_msgs::Point *odometry, float *vertical_length, int index)
 {
   geometry_msgs::Point revise_point =*odometry;
-  float norm = *vertical_length;
+  float norm = 4-*vertical_length;
+
+  revise_point.x = (4*in_path_object_infor.x_intercept[index]-(4-norm)*revise_point.x)/norm;
+  revise_point.y = ((4*in_path_object_infor.y_intercept[index]-(4-norm)*revise_point.y))/norm;
 
   return revise_point;
 }
 
+geometry_msgs::Point calculation_further(geometry_msgs::Point *odometry, int *order)
+{
+  geometry_msgs::Point p = *odometry;
+  int ors = *order;
+  if (in_path_object_infor.direction[ors]==1){
+    p.x = p.x-4.5;
+    p.y = p.y;
+  }
+  else (p.x = p.x+4.5);
+
+
+  return p;
+}
 
 
 void sub_path_destination()
 {
-
-  sub_path_des.data.resize(in_path_object_infor.size-1);
-  sub_path_des.num = in_path_object_infor.size-1;
   sub_path_des.data.clear();
+  sub_path_des.data.resize(1);
+  sub_path_des.num = in_path_object_infor.size;
+  cout<<"initialized sub_path_des is done"<<endl;
+  cout<<"path_infor .size : "<<in_path_object_infor.size<<endl;
+  // geometry_msgs::Point prepoint;
+  // prepoint.x =robot_data.x;
+  // prepoint.y =robot_data.y;
+  // float prem = m;
+  // float preb = b;
 
+  int index = 0; // delete the grabbed ball
+  //while (index+1 <= in_path_object_infor.size)
+//  {
+    // geometry_msgs::Point newpoint;
+    // float newm= prem;
+    // float newb = preb;
 
-  int index = 1; // delete the grabbed ball
-  while (index+1 <= in_path_object_infor.size)
-  {
     int diff = in_path_object_infor.size;
-    float first = index;
-    float second = index+1;
-    float vertical_length1 = calculate_vertical_distance(&in_path_object_infor.odometry[first], &in_path_object_infor.order[first]);
-    if (second <= in_path_object_infor.size){
+    int first=0;
+    int second=0;
+    float vertical_length1;
+    float vertical_length2;
+    if (diff >=2)
+    {
+      first = 1;
+      sub_path_des.data.resize(2);
+      vertical_length1 = calculate_vertical_distance(&in_path_object_infor.odometry[first], &in_path_object_infor.order[first]);
+    }
+    else if (diff>=3)
+    {
+      sub_path_des.data.resize(3);
+      second =2;
+      vertical_length2 = calculate_vertical_distance(&in_path_object_infor.odometry[second], &in_path_object_infor.order[first]);
+    }
+    cout<<"flag point vertical_length defined"<<endl;
+
+    if (second ==2)
+    {
       float result = calculate_between_length(&in_path_object_infor.odometry[first], &in_path_object_infor.odometry[second]);
- 
-      float vertical_length2 = calculate_vertical_distance(&in_path_object_infor.odometry[second], &in_path_object_infor.order[first]);
       if (in_path_object_infor.direction[first] == in_path_object_infor.direction[second])
       {
         if(vertical_length1 > vertical_length2)
         {
-          sub_path_des.data[index-1] = opposite_position(&in_path_object_infor.odometry[first], & vertical_length1);
+          sub_path_des.data.resize(1);
+          sub_path_des.data[0] = opposite_position(&in_path_object_infor.odometry[first], & vertical_length1, first);
         }
-        else { sub_path_des.data[index-1] = opposite_position(&in_path_object_infor.odometry[second], & vertical_length2);}
-        index+=2;
+        else {
+          sub_path_des.data.resize(1);
+          sub_path_des.data[0] = opposite_position(&in_path_object_infor.odometry[second], & vertical_length2 ,second);}
       }
 
       else if ((vertical_length1 * vertical_length2) !=0)
       {
         if (result > 0.4)
         {
+          sub_path_des.data.resize(1);
+          sub_path_des.data[0] = calculation_further(&in_path_object_infor.odometry[second], &in_path_object_infor.order[second]);
 
         }
         else
         {
-
+          if(vertical_length1 > vertical_length2)
+          {
+            sub_path_des.data.resize(1);
+            sub_path_des.data[0] = calculation_further(&in_path_object_infor.odometry[second], &in_path_object_infor.order[second]);
+          }
+          else
+          {
+            sub_path_des.data.resize(1);
+            sub_path_des.data[0] = calculation_further(&in_path_object_infor.odometry[first], &in_path_object_infor.order[first]);
+          }
         }
       }
       else
       {
-
+        if (in_path_object_infor.direction[first] == 3)
+        {
+          sub_path_des.data[0] = calculation_further(&in_path_object_infor.odometry[first], &in_path_object_infor.order[first]);
+        }
+        else{
+          sub_path_des.data[0] = calculation_further(&in_path_object_infor.odometry[second], &in_path_object_infor.order[second]);
+        }
       }
 
     }
-
-    else{
-      sub_path_des.data[first] = opposite_position(&in_path_object_infor.odometry[first], & vertical_length1);
+    else if (first ==1)
+    {
+      sub_path_des.data[0] = opposite_position(&in_path_object_infor.odometry[first], &vertical_length1, first);
     }
+    else
+    {
+      sub_path_des.data[0].x = 1.5;
+       sub_path_des.data[0].y= 5;
+     }
+  //prepoint = sub_path_des.data[first-1];
 
-  }
+  //}
 }
 
 void rotation(float x, float y)
@@ -339,31 +404,40 @@ void rotation(float x, float y)
   motion.msg ="rotation";
   motion.x =x;
   motion.y=y;
+  save_min_red();
+  cout << "min red ball : "  << red_min_dist.x << " " << red_min_dist.y << "  dist : " << red_min_dist.dist << endl;
   pub_motion.publish(motion);
 
 }
 
-
-void wobble(float angle)
+void driving()
 {
+  // cout<<"rotate activated : "<<x<<"      "<<y<<endl;
   autocontrol::motion motion;
-  motion.msg = "wobbling";
-  motion.angle = angle;
 
-  save_min_red();
-  //cout << "min red ball : "  << red_min_dist.x << " " << red_min_dist.y << "  dist : " << red_min_dist.dist << endl;
+  motion.msg ="driving";
+  motion.x =sub_path_des.data[0].x;
+  motion.y=sub_path_des.data[0].y;
   pub_motion.publish(motion);
-  // for (int i = 0; i<red_store.num; i++)
-  // {
+
+}
+
+// void wobble(float angle)
+//{
+  // autocontrol::motion motion;
+  // motion.msg = "wobbling";
+  // motion.angle = angle;
+  //
+  // save_min_red();
+  // //cout << "min red ball : "  << red_min_dist.x << " " << red_min_dist.y << "  dist : " << red_min_dist.dist << endl;
+  // pub_motion.publish(motion);
+  // // for (int i = 0; i<red_store.num; i++)
+  // // {
   //   cout<<"red_ball stored : "<<red_store<<endl;
   //   cout<<"red balls " <<i<<":   "<<red_store.data[i].x<<"   "<<red_store.data[i].y<<endl;
   // }
-}
+//}
 
-void calculate_sub_path()
-{
-
-}
 
 
 void mode1_act()
@@ -372,7 +446,7 @@ void mode1_act()
   if(process_num ==0)
   {
 
-    rotation(1,2.5);
+    rotation(0,1);
 
     if (task_done == true)
     {
@@ -382,18 +456,18 @@ void mode1_act()
   }
   else if (process_num ==1)
   {
-    wobble(25);
-    // update();
-    cout << "process " << 2 <<" started" << endl;
-
-    if (task_done == true)
-    {
-      process_num = 2;
-      task_done = false;
-    }
-  }
-  else if (process_num ==2)
-  {
+  //   wobble(25);
+  //   // update();
+  //   cout << "process " << 2 <<" started" << endl;
+  //
+  //   if (task_done == true)
+  //   {
+  //     process_num = 2;
+  //     task_done = false;
+  //   }
+  // }
+  // else if (process_num ==2)
+  // {
     autocontrol::motion motion;
     motion.msg ="harvesting";
     motion.x =red_min_dist.x;
@@ -429,15 +503,40 @@ void mode1_act()
       }
       process_num=4;
       task_done =false;
+      cout<< "process_num =4"<<endl;
+      cout<<"task out is false"<<endl;
     }
   }
-  else if (process_num ==4){
-    calculate_sub_path();
+  else if (process_num ==4)
+  {
+    cout <<"process_num lauched"<<endl;
+    cout <<"driving count : "<<driving_count<<endl;
+    if(driving_count = 0)
+      {
+        for(int i=0; i<5; i++)
+        {
+          cout<<"enter the sub_path_destination fucntion"<<endl;
+        }
 
-
-
-
+        sub_path_destination();
+      }
+    else if (driving_count == 1)
+    {
+      driving();
+      if(abs(robot_data.x-1.5)<0.2 && abs(robot_data.y-1.5)<0.2 )
+      {
+        mode =2;
+        process_num = 0;
+        task_done = false;
+        driving_count = 0;
+      }
+      else {
+        sub_path_destination();
+        task_done= false;
+      }
+    }
   }
+  driving_count = 1;
 }
 
 
@@ -533,7 +632,7 @@ int main(int argc, char **argv)
    ros::Subscriber sub_sys_cmd = nh.subscribe("/sys_cmd",1000,sys_cb);
    ros::Subscriber sub_motion = nh.subscribe("/path_plan/mode",1,task_done_Callback);
 
-
+   cout<<"path_plan launched"<<endl;
 
   pub_motion = nh.advertise<autocontrol::motion>("motion",1);
 
@@ -553,7 +652,6 @@ int main(int argc, char **argv)
   {
     if(sys_cmd.data != "wait" && sys_cmd.data != "")
     {
-
       pathPlan();
     }
 
