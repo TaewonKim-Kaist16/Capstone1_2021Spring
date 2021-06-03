@@ -26,8 +26,8 @@ const int max_value_H = 360 / 2;
 const int max_value = 255;
 int low_H = 0, low_S = 72, low_V = 52;
 int high_H = max_value_H, high_S = max_value, high_V = max_value;
-int low_H_red1 = 0, low_H_red2 = 120, low_H_green = 53;
-int high_H_red1 = 11, high_H_red2 = max_value_H, high_H_green = 80;
+int low_H_red1 = 0, low_H_red2 = 120, low_H_green = 20;
+int high_H_red1 = 11, high_H_red2 = max_value_H, high_H_green = 40;
 float green_distance_threshold = 0.18;
 float slow_threshold = 0.23;
 float green_distance_after = 0.35;
@@ -48,7 +48,7 @@ void green_mask()
 {
     Mat frame_HSV;
     cvtColor(image_brg, frame_HSV, COLOR_BGR2HSV);
-    inRange(frame_HSV, Scalar(low_H_green, low_S, low_V), Scalar(high_H_green, high_S, high_V), mask);
+    inRange(frame_HSV, Scalar(low_H_green, low_S, 40), Scalar(high_H_green, high_S, 135), mask);
 }
 
 void goal_approach()
@@ -105,7 +105,7 @@ void goal_approach()
             //waitKey(15000);
             after_goal_end = true;
             start_time = curr_time;
-	    geometry_msgs::Twist arm_wide;
+            geometry_msgs::Twist arm_wide;
             arm_wide.angular.x = 0;
             arm_wide.angular.y = 0;
             arm_wide.angular.z = 0;

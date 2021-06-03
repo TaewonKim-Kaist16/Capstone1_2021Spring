@@ -27,8 +27,8 @@ int color_setting = 1;
 const int color_setting_max = 2;
 int low_H = 0, low_S = 72, low_V = 52;
 int high_H = max_value_H, high_S = max_value, high_V = max_value;
-int low_H_red1 = 0, low_H_red2 = 120, low_H_green = 53;
-int high_H_red1 = 11, high_H_red2 = max_value_H, high_H_green = 80;
+int low_H_red1 = 0, low_H_red2 = 120, low_H_green = 20;
+int high_H_red1 = 11, high_H_red2 = max_value_H, high_H_green = 40;
 
 int GB_size_div_two = 2, GB_size = 5;
 
@@ -215,7 +215,6 @@ ros::Publisher pub_markers;
 
 void ball_detect()
 {
-    Mat image;
     if (!image_distort.data)
     {
         printf("No image data \n");
@@ -224,7 +223,8 @@ void ball_detect()
     Mat intrinsic = Mat(3, 3, CV_32F, intrinsic_data);
     Mat distCoeffs = Mat(1, 5, CV_32F, distortion_data);
     //undistort(image_distort, image, intrinsic, distCoeffs);
-    image = image_distort;
+    //image = image_distort;
+    Mat image(image_distort, Rect(0, 0, 640, 320));
     flip(image, image, 1); // flip the image in horizontal direction
     //imshow("Distort", image_distort);
     //printf("x: %d y: %d\n", image.rows, image.cols);
@@ -333,7 +333,7 @@ void ball_detect()
         }
         else if (color_i == 1)
         {
-            inRange(frame_HSV, Scalar(low_H_green, low_S, low_V), Scalar(high_H_green, high_S, high_V), frame_threshold);
+            inRange(frame_HSV, Scalar(low_H_green, low_S, 40), Scalar(high_H_green, high_S, 135), frame_threshold);
             c.r = 0.0;
             c.g = 1.0;
             c.b = 0.0;
